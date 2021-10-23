@@ -38,8 +38,7 @@ def cadastro():
     if request.method == "POST":
         if request.form["senha1"] == request.form["senha2"]: #confima se as senhas digitadas são iguais
             senha_hash = sha256_crypt.hash(request.form["senha1"]) #efetua o hash na senha
-            db.cadastra_usuario(request.form["login"], \
-            senha_hash, request.form["nome"])
+            db.cadastra_usuario(request.form["login"], senha_hash, request.form["nome"])
             return render_template("LOGIN.html", mensagem="Usuário cadastrado")
         else:
             return render_template("CADASTRO.html", erro="As senhas não coincidem")
@@ -115,13 +114,10 @@ def sair():
     return redirect(url_for("index"))
  
 
-@app.route('/api/teste', methods=["POST"])
+##########################################API#######################################
+
+@app.route('/api/cadastro', methods=["POST"])
 def CAD_POST():
-    resposta = {}
-        
-    resposta1 = "A aplicação gravou seu nome e sua idade."
-    resposta2 = "Faltam alguns dados." 
-    resposta3 = 'Cadastro efetuado.'
     resposta4 = 'As senhas não coincidem.'
     
     try: 
@@ -133,16 +129,12 @@ def CAD_POST():
         if nome and login and senha1 and senha2 != None:
             if request.form["senha1"] == request.form["senha2"]:
                 senha_hash = sha256_crypt.hash(request.form["senha1"])
-                db.cadastra_usuario(request.form["login"],
-                request.form["nome"],
-                request.form["senha1"],
-                request.form["senha2"],
-                )        
-                return jsonify(resposta3)            
+                db.cadastra_usuario(request.form["login"], senha_hash, request.form["nome"])
+                return jsonify({"status": 0, "msg": 'Cadastro efetuado.'})            
             else:
-                return jsonify(resposta4)                                   
+                return jsonify({"status": 2, "msg": 'As senhas não coincidem.'})                                   
     except KeyError: 
-        return(resposta2)
+        return jsonify({"status": 1, "msg": "Faltam alguns dados."})
 
 @app.route('/api/login',methods=['GET'])
 def login():
