@@ -5,7 +5,7 @@ import os
 from flask import jsonify
 from flask_restful import Api
 from classes.CADASTRO import Cadastrar
-from kivy.network.urlrequest import UrlRequest
+
 
 
 

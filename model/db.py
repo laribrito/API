@@ -21,10 +21,10 @@ def busca_usuario(login):
     return con.execute("SELECT * FROM usuario WHERE login = ?",[login]).fetchone()
 
 # Cadastra um usuário no banco
-def cadastra_usuario(login, nome, senha1,senha2):
+def cadastra_usuario(login, senha, nome):
     con = get_db()
-    con.execute("INSERT INTO usuario VALUES(NULL, ?, ?, ?,?)", 
-    [login, nome, senha1,senha2])
+    con.execute("INSERT INTO usuario VALUES(NULL, ?, ?, ?)", \
+    [login, senha, nome])
     con.commit()
 
 # Altera o nome de um usuário
