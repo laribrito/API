@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Perfil / Coxitter</title>
+    <link href="../static/styles/estilo.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=News Cycle|Roboto">
+    <script src="https://kit.fontawesome.com/17a3127d7b.js" crossorigin="anonymous"></script>
+  </head>
+  <body style="background-color: white; margin: 0;">
+    {% include "mensagens.html" %}
+    <div id="barraLateralE">
+      <div id="altImg">
+        <img src="{{ url_for('perfil_avatar', login=logado) }}" id="imagemPerfilPI">
+        <a href="#"><div class="half-circle" title="Alterar imagem de perfil"><i class="fas fa-camera" style="font-size: x-large;"></i></div></a>
+      </div>
+        <table>
+            <tr>
+                <td>
+                <a href="{{url_for('index')}}" id="ancoraPagina"><img src="../static/imagens/pi.png" height="30" id="imagemPagina"> Pagina inicial</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <a href="{{url_for('perfil')}}" id="ancoraPagina"><img src="../static/imagens/p.png" height="30" id="imagemPagina">Perfil</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                <a href="#" id="ancoraPagina"><img src="../static/imagens/n.png" height="30" id="imagemPagina">Notificacoes</a>
+                </td>
+            </tr>
+        </table>
+        <div style="margin-left: 20px; margin-top: 50px;">
+            <a href="#" class="coxinhar" id="coxinha01"><img src="../static/imagens/coxinhar.png" height="60" style="margin-bottom: -17px;">Coxinhar</a>
+        </div>
+    </div>
+    <div id="barraLateralD">
+      <form>
+        <input type="text" name=busca id="campoBusca" placeholder="Pesquisar...">
+        <img src="../static/imagens/refri.png" width="70" id="campoBuscaRefri">
+        <input type="submit" value="Pesquisar" style="font-size: small; display: block; margin-left: auto; margin-right: auto; margin-top: -8px;">
+      </form>
+
+      <h1 style="display: block; text-align: center; margin-top: 30%;">Coxitter</h1>
+      <img src="../static/imagens/professor.jpeg" id="professorPI"  onmouseover="hover(this);" onmouseout="unhover(this);"">
+      <h3 style="display: block; text-align: center; font-weight: lighter;">Mestre<br>Peixonauta</h3>
+      <div class="menuOpc">
+        <button id="botaoOpc">...</button>
+        <div class="menuOpc-conteudo">
+          <a href="#">Editar perfil</a>
+          <a href="{{url_for('sair')}}">Sair</a>
+        </div>
+      </div>
+    </div>
+    <div id="meioPagina">
+      <h2>EDITANDO O PERFIL</h2>
+      <div>
+        <h4> Foto do Perfil</h4>
+        <form action="{{ url_for('perfil_foto') }}" method="POST" class="formEdicao" enctype="multipart/form-data">
+          <!-- Exibe a foto atual -->
+          <p><label>Foto do perfil (tamanho máximo: 128 KB):</label></p>
+          <img src="{{ url_for('perfil_avatar', login=logado) }} " style= "width : 250px;"></p>
+          <!-- Recebe a nova foto -->
+          <p><input type="file" name="foto" accept="image/png, image/jpeg"></p>
+          <p><input type="submit" value="Enviar"></p>
+        </form>
+        
+        <h4>Nome do usuário</h4>
+        <form action="{{ url_for('editar_nome') }}" class="formEdicao" method="post">
+          <div>
+            <label for="nome">Nome:</label><input type="text"name="nome" size="50" value="{{ user.nome }}">
+          </div>
+          <div>
+            <input type="submit" value="Alterar nome">
+          </div>
+        </form>
+
+        <h4>Senha</h4>
+        <form action="{{ url_for('editar_senha') }}" class="formEdicao" method="post">
+          <div>
+            <label for="senha1">Senha:</label><input type="password"name="senha1" size="50" required>
+          </div>
+          <div>
+            <label for="senha2">Repita a senha:</label><input type="password" name="senha2" size="50" required>
+          </div>
+          <div>
+            <input type="submit" value="Alterar senha">
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function hover(element) {
+        element.setAttribute('src', '../static/imagens/queridoProfessor.png');
+      }
+
+      function unhover(element) {
+        element.setAttribute('src', '../static/imagens/professor.jpeg');
+      }
+    </script>
+  </body>
+</html>

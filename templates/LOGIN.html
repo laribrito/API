@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Login</title>
+    <link href="../static/styles/estilo.css" rel="stylesheet"/>
+
+  </head>
+  <body style="text-align: center;">
+	<h1 style="margin-top: 7%;">Coxitter</h1>
+	{% include "mensagens.html" %}
+	<form action="{{ url_for('autenticacao') }}" class="campo" method="post">
+		  <label for="login">Login:</label><br>
+		  <input type="text" name = "login" id="login" required><br>
+		  
+		  <label for="senha">Senha:</label><br>
+		  <input type="password" name = "senha" id="senha" required><br>
+
+		  <a href="{{url_for('cadastro')}}">Novo cadastro</a>
+		  <input type="submit" value="Entrar">		
+	</form>   
+	<img class="swing" src="../static/imagens/Cantinho-Cortado.png" alt="decoração 1" id="imagemPequenaLogin">
+	<img class="swing" src="../static/imagens/Canteba-Cortado.png" alt="decoração 2" id="imagemGrandeLogin">
+  </body>
+</html>

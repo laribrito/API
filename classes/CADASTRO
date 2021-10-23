@@ -1,0 +1,6 @@
+from flask_restful import Resource
+
+
+class Cadastro(Resource):
+	def post(self):
+	pass

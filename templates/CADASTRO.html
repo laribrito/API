@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Login</title>
+    <link href="../static/styles/estilo.css" rel="stylesheet"/>
+
+  </head>
+  <body style="text-align: center;">
+	<h1 style="margin-top: 3%;">Cadastro Coxitter<br>
+		Adentre nessa delicia!</h1>
+		{% include "mensagens.html" %}
+	<form action="{{url_for('cadastro')}}" class="campo" method="post" >
+		<label class="mt-1">Nome:</label><br>
+		<input type="text" name = "nome" required><br>
+  
+		<label class="mt-1">Login:</label><br>
+		<input type="text" name = "login" required><br>
+  
+		<label class="mt-1">Senha:</label><br>
+		<input type="password" name = "senha1" required><br>
+
+		<label class="mt-1">Repita a Senha:</label><br>
+		<input type="password" name = "senha2" required><br>
+		
+		<a href="{{url_for('index')}}">Voltar</a>
+		<input type="submit" class="btn btn-light mt-4" value="Cadastrar">
+		
+	<img class="swing" src="../static/imagens/Cantinho-Cortado.png" alt="decoração 1" id="imagemPequenaLogin">
+	<img class="swing" src="../static/imagens/Canteba-Cortado.png" alt="decoração 2" id="imagemGrandeLogin">
+  </body>
+</html>
