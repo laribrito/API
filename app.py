@@ -231,7 +231,23 @@ def edit_senha():
     except KeyError: 
         return jsonify({"status": 1, "msg": "Faltam alguns dados."})
 
+@app.route('/api/foto/<login>', methods = ['GET'])
+def retorna_foto(login):
+    #Captura o token que vem do Header
+    auth = request.headers.get('Authorization')
+    #Testa se tem algum usuario cadastrado com esse token
+    usuario = Token.retorna_usuario(auth)
+    if (usuario == None):
+        #ERRO: Não tem esse token no banco de dados
+        return {'status': -1, 'msg': 'Token inválido.'}
+    ##########################################################################
 
+    # Verifica se o arquivo existe
+    if os.path.isfile(f"{app.config['PERFIL_FOLDER']}/{login}"):
+        return {"status": 0, "url": f"{request.host_url}{app.config['PERFIL_FOLDER']}/{login}"}
+    # Se não, exibe o avatar padrão
+    else:
+        return {"status": 0, "url": f"{request.host_url}/static/imagens/padrao.png"}
 
 
 #db.altera_nome(request.form["login"], request.form["nome"])
