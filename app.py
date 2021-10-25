@@ -231,23 +231,43 @@ def edit_senha():
     except KeyError: 
         return jsonify({"status": 1, "msg": "Faltam alguns dados."})
 
-@app.route('/api/foto/<login>', methods = ['GET'])
+@app.route('/api/foto/<login>', methods = ['GET', "POST"])
 def retorna_foto(login):
-    #Captura o token que vem do Header
-    auth = request.headers.get('Authorization')
-    #Testa se tem algum usuario cadastrado com esse token
-    usuario = Token.retorna_usuario(auth)
-    if (usuario == None):
-        #ERRO: Não tem esse token no banco de dados
-        return {'status': -1, 'msg': 'Token inválido.'}
-    ##########################################################################
+    if request.method == "GET":
+        #Captura o token que vem do Header
+        auth = request.headers.get('Authorization')
+        #Testa se tem algum usuario cadastrado com esse token
+        usuario = Token.retorna_usuario(auth)
+        if (usuario == None):
+            #ERRO: Não tem esse token no banco de dados
+            return {'status': -1, 'msg': 'Token inválido.'}
+        ##########################################################################
 
-    # Verifica se o arquivo existe
-    if os.path.isfile(f"{app.config['PERFIL_FOLDER']}/{login}"):
-        return {"status": 0, "url": f"{request.host_url}{app.config['PERFIL_FOLDER']}/{login}"}
-    # Se não, exibe o avatar padrão
+        # Verifica se o arquivo existe
+        if os.path.isfile(f"{app.config['PERFIL_FOLDER']}/{login}"):
+            return {"status": 0, "url": f"{request.host_url}{app.config['PERFIL_FOLDER']}/{login}"}
+        # Se não, exibe o avatar padrão
+        else:
+            return {"status": 0, "url": f"{request.host_url}/static/imagens/padrao.png"}
     else:
-        return {"status": 0, "url": f"{request.host_url}/static/imagens/padrao.png"}
+        #Captura o token que vem do Header
+        auth = request.headers.get('Authorization')
+        #Testa se tem algum usuario cadastrado com esse token
+        usuario = Token.retorna_usuario(auth)
+        if (usuario == None):
+            #ERRO: Não tem esse token no banco de dados
+            return {'status': -1, 'msg': 'Token inválido.'}
+        ##########################################################################
+
+        #verifica se a foto esta sendo alterada do usuário cadastrado
+        if usuario["login"] == login:
+            arq = open(os.path.join(app.config['PERFIL_FOLDER'], usuario["login"]), "wb")
+            arq.write(request.data)
+            arq.close()
+
+            return {"status": 0, "msg": "Foto alterada com sucesso"}
+        else:
+            return {"status": 2, "msg": "Você não pode alterar esse perfil"}
 
 
 #db.altera_nome(request.form["login"], request.form["nome"])

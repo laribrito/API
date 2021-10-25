@@ -2,10 +2,7 @@ from model import db
 class Token():
     def recebe_token(auth):
         try:
-            print(auth)
             (tipo, token) = auth.split(' ')
-            print(tipo)
-            print(token)
             if tipo.lower() != "bearer":
                 return None
             else:
