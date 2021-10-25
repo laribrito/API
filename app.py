@@ -7,7 +7,7 @@ from flask_restful import Api
 from classes.CADASTRO import Cadastrar
 import secrets
 from passlib.context import CryptPolicy
-
+from classeToken import Token
 
 app = Flask(__name__)
 api = Api(app)
@@ -152,7 +152,6 @@ def login():
     
             if sha256_crypt.verify(senha1, usuario["senha"]):
                 token = secrets.token_hex(128)
-                token = f'Bearer {token}'
                 db.adiciona_token(login, token)
                 return {'status': 0, 'token': token}
             
@@ -165,7 +164,26 @@ def login():
     except KeyError:
         return jsonify({'status': 1, 'msg': "Faltam alguns dados." })
 
+@app.route("/api/perfil/<login>", methods=["GET"])
+def retornaPerfil(login):
+    #Captura o token que vem do Header
+    auth = request.headers.get('Authorization')
+    #Testa se tem algum usuario cadastrado com esse token
+    usuario = Token.retorna_usuario(auth)
+    if (usuario == None):
+        #ERRO: Não tem esse token no banco de dados
+        return {'status': -1, 'msg': 'Token inválido.'}
+    ##########################################################################
+    
+    #Busca pelo usuario
+    perfil = db.busca_usuario(login)
 
+    if (perfil == None):
+        #ERRO: Não tem usuario cadastrado
+        return {'status': 1, 'msg': 'Perfil não encontrado.'}
+    else:
+        #SUCESSO
+        return {'status': 0, 'login': login, 'nome': usuario['nome']}
 
 @app.route('/api/editarnome', methods =["POST"])        
 def edit_nome():
@@ -175,7 +193,7 @@ def edit_nome():
         login = request.form['login']
       
         if usuario != "":                                
-            if (login, usuario["nome"]):    
+            if (login, usuario["nome"]):   
                 db.altera_nome(request.form['login'],request.form['nome'])
                 token = secrets.token_hex(128)
                 token = f'Bearer {token}'
