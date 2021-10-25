@@ -38,3 +38,19 @@ def altera_senha(login, senha):
     con = get_db()
     con.execute("UPDATE usuario SET senha = ? WHERE login = ?",[senha, login])
     con.commit()
+
+def adiciona_token(login, token):
+    con = get_db()
+    usuario = con.execute("SELECT id FROM usuario WHERE login = ?",
+    [login]).fetchone()
+    con.execute("INSERT INTO tokens VALUES(NULL, ?, ?)",
+    [usuario['id'], token])
+    con.commit()    
+
+def verifica_token(token):
+    con = get_db()
+    dados = con.execute("SELECT * FROM tokens WHERE token = ?",[token]).fetchone()
+    if (dados != None):
+        return con.execute("SELECT * FROM usuario WHERE id = ?",[dados['id_usuario']]).fetchone()
+    else:
+        return None    

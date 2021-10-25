@@ -5,8 +5,8 @@ import os
 from flask import jsonify
 from flask_restful import Api
 from classes.CADASTRO import Cadastrar
-
-
+import secrets
+from passlib.context import CryptPolicy
 
 
 app = Flask(__name__)
@@ -114,11 +114,10 @@ def sair():
     return redirect(url_for("index"))
  
 
-##########################################API#######################################
+##########################################API##################################################################################################################
 
 @app.route('/api/cadastro', methods=["POST"])
 def CAD_POST():
-    resposta4 = 'As senhas não coincidem.'
     
     try: 
         nome = request.form['nome']
@@ -126,33 +125,99 @@ def CAD_POST():
         senha1 = request.form['senha1']
         senha2 = request.form['senha2']
         
-        if nome and login and senha1 and senha2 != None:
+        if nome or login or senha1 or senha2 != "":
             if request.form["senha1"] == request.form["senha2"]:
                 senha_hash = sha256_crypt.hash(request.form["senha1"])
                 db.cadastra_usuario(request.form["login"], senha_hash, request.form["nome"])
                 return jsonify({"status": 0, "msg": 'Cadastro efetuado.'})            
+        
             else:
-                return jsonify({"status": 2, "msg": 'As senhas não coincidem.'})                                   
+                return jsonify({"status": 2, "msg": 'As senhas não coincidem.'})  
+        else:
+            return jsonify({'status': 2, 'msg': 'Faltam campos a serem preenchidos.'})                                         
+    
     except KeyError: 
         return jsonify({"status": 1, "msg": "Faltam alguns dados."})
 
-@app.route('/api/login',methods=['GET'])
+@app.route('/api/login',methods=['POST'])
 def login():
-    resposta1 = "Login Efetuado com sucesso!"
-    resposta2 = 'Senha Inválida, tente novamente.'
-    resposta3 = 'Senha ou Login Inválidos, tente novamente.'
-    resposta4 = 'Usuário não cadastrado, cadastre-se agora.'
-    resposta5 = 'Preencha os campos de login e senha para entrar no site.'
+    try:             
+        usuario = db.busca_usuario(request.form["login"])
+        senha1 = request.form['senha1']
+        login = request.form['login']
+        
+        if login or senha1 != "":
+            if usuario == None:
+                return jsonify({"status": 2, 'msg': 'Falha na Autenticação.'})
+    
+            if sha256_crypt.verify(senha1, usuario["senha"]):
+                token = secrets.token_hex(128)
+                token = f'Bearer {token}'
+                db.adiciona_token(login, token)
+                return {'status': 0, 'token': token}
+            
+            else:
+                return jsonify({'status': 1, 'msg': 'Falha de autenticação.'})
+            
+        else:
+            return jsonify({'status': 2, 'msg': 'Faltam campos a serem preenchidos.'})   
+   
+    except KeyError:
+        return jsonify({'status': 1, 'msg': "Faltam alguns dados." })
 
-    login = request.form['login']
-    senha1 = request.form['senha1']
-                   
+
+
+@app.route('/api/editarnome', methods =["POST"])        
+def edit_nome():
     try:
-        if login and senha1 != None:
-            db.busca_usuario(request.form['login']) 
-            return(resposta1) 
+        usuario = db.busca_usuario(request.form["login"])
+        nome = request.form['nome']
+        login = request.form['login']
+      
+        if usuario != "":                                
+            if (login, usuario["nome"]):    
+                db.altera_nome(request.form['login'],request.form['nome'])
+                token = secrets.token_hex(128)
+                token = f'Bearer {token}'
+                db.verifica_token(usuario, token)                    
+                return {'status': 0, 'token': token}
+                                                  
+            else:
+                return jsonify({'status':1, 'msg': 'Há campos a serem preenchidos.'})                
+               
+        else:
+            return jsonify({'status': 2, 'msg': 'Usuário não encontrado'})
+        
+    except KeyError:
+        return jsonify({'status': 1, 'msg': 'Usuário Não cadastrado'})
 
-        elif login or senha1 == None:
-            return(resposta5)   
-    except:
-        pass
+@app.route('/api/editarsenha', methods = ['POST'])
+def edit_senha():
+    
+    try: 
+        usuario = db.busca_usuario(request.form["login"])
+        senha = db.busca_usuario(request.form['senha1'])
+        senha1 = request.form['senha1']
+        senha2 = request.form['senha2']
+
+        if usuario and senha != "":       
+            if sha256_crypt.verify(senha, usuario["senha1"]):           
+                if request.form['senha1'] == request.form['senha2']: #confima se as senhas digitadas são iguais
+                    senha_hash = sha256_crypt.hash(request.form["senha1"])
+                    db.altera_senha(usuario, senha_hash) #efetua o hash na senha
+                    token = secrets.token_hex(128)
+                    token = f'Bearer {token}'
+                    db.verifica_token(usuario, token)
+                    return jsonify({'status': 0, 'msg':'Senha Alterada', 'token': token})
+
+            else:
+                return jsonify({'status': 1, 'msg': 'Senhas não coincidem'})                                  
+
+    except KeyError: 
+        return jsonify({"status": 1, "msg": "Faltam alguns dados."})
+
+
+
+
+#db.altera_nome(request.form["login"], request.form["nome"])
+#return jsonify({'status': 0, 'msg': 'Nome alterado com sucesso.'})
