@@ -192,7 +192,6 @@ def edit_senha():
         senha2 = request.form['senha2']
         auth = request.headers.get('Authorization')    
         usuario = Token.retorna_usuario(auth)
-        print(usuario)
         if (login and senha1 and senha2) != "":
             if (usuario == None):
                 #ERRO: Não tem esse token no banco de dados
@@ -276,6 +275,21 @@ def retorna_foto(login):
         else:
             return {"status": 2, "msg": "Você não pode alterar esse perfil"}
 
+@app.route('/api/sair', methods = ['GET'])
+def sair_api():
+    #Captura o token que vem do Header
+    auth = request.headers.get('Authorization')
+    #Testa se tem algum usuario cadastrado com esse token
+    usuario = Token.retorna_usuario(auth)
+    if (usuario == None):
+        #ERRO: Não tem esse token no banco de dados
+        return {'status': -1, 'msg': 'Token inválido.'}
+    ##########################################################################
+
+    #separa o Bearer do Token
+    (tipo, token) = auth.split(' ')
+    db.remove_token(token)
+    return {"status": 0}
 
 #db.altera_nome(request.form["login"], request.form["nome"])
 #return jsonify({'status': 0, 'msg': 'Nome alterado com sucesso.'})

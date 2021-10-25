@@ -53,4 +53,9 @@ def verifica_token(token):
     if (dados != None):
         return con.execute("SELECT * FROM usuario WHERE id = ?",[dados['id_usuario']]).fetchone()
     else:
-        return None    
+        return None
+
+def remove_token(token):
+    con = get_db()
+    con.execute("DELETE FROM tokens WHERE token = ?", [token])
+    con.commit()
