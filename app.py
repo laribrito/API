@@ -3,15 +3,12 @@ from model import db
 from passlib.hash import sha256_crypt
 import os
 from flask import jsonify
-from flask_restful import Api
 from classes.CADASTRO import Cadastrar
 import secrets
 from passlib.context import CryptPolicy
 from classeToken import Token
 
 app = Flask(__name__)
-api = Api(app)
-api.add_resource(Cadastrar, '/api/cadastro')
 
 app.secret_key = b'jhdakjrtyfuygiuhijebson145shsOhkhhujk666'
 @app.route("/")
