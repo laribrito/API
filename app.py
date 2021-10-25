@@ -182,54 +182,61 @@ def retornaPerfil(login):
         #SUCESSO
         return {'status': 0, 'login': login, 'nome': usuario['nome']}
 
-@app.route('/api/editarnome', methods =["POST"])        
-def edit_nome():
-    try:
-        usuario = db.busca_usuario(request.form["login"])
-        nome = request.form['nome']
-        login = request.form['login']
-      
-        if usuario != "":                                
-            if (login, usuario["nome"]):   
-                db.altera_nome(request.form['login'],request.form['nome'])
-                token = secrets.token_hex(128)
-                token = f'Bearer {token}'
-                db.verifica_token(usuario, token)                    
-                return {'status': 0, 'token': token}
-                                                  
-            else:
-                return jsonify({'status':1, 'msg': 'Há campos a serem preenchidos.'})                
-               
-        else:
-            return jsonify({'status': 2, 'msg': 'Usuário não encontrado'})
-        
-    except KeyError:
-        return jsonify({'status': 1, 'msg': 'Usuário Não cadastrado'})
-
 @app.route('/api/editarsenha', methods = ['POST'])
 def edit_senha():
     
     try: 
-        usuario = db.busca_usuario(request.form["login"])
+        login = db.busca_usuario(request.form["login"])
         senha = db.busca_usuario(request.form['senha1'])
         senha1 = request.form['senha1']
         senha2 = request.form['senha2']
-
-        if usuario and senha != "":       
-            if sha256_crypt.verify(senha, usuario["senha1"]):           
-                if request.form['senha1'] == request.form['senha2']: #confima se as senhas digitadas são iguais
-                    senha_hash = sha256_crypt.hash(request.form["senha1"])
-                    db.altera_senha(usuario, senha_hash) #efetua o hash na senha
-                    token = secrets.token_hex(128)
-                    token = f'Bearer {token}'
-                    db.verifica_token(usuario, token)
-                    return jsonify({'status': 0, 'msg':'Senha Alterada', 'token': token})
+        auth = request.headers.get('Authorization')    
+        usuario = Token.retorna_usuario(auth)
+        print(usuario)
+        if (login and senha1 and senha2) != "":
+            if (usuario == None):
+                #ERRO: Não tem esse token no banco de dados
+                    return {'status': -1, 'msg': 'Token inválido.'}                    
+                
+            if request.form['senha1'] == request.form['senha2']:                                         
+                senha_hash = sha256_crypt.hash(request.form["senha1"])
+                db.altera_senha(usuario['login'], senha_hash) #efetua o hash na senha
+                return jsonify({'status': 0, 'msg': 'Senha Alterada.'})
 
             else:
-                return jsonify({'status': 1, 'msg': 'Senhas não coincidem'})                                  
-
+                return {'status': 0, 'msg': 'Senhas não coincidem.'}                  
+                                                  
+        else:
+            return jsonify({'status': -1, 'msg': 'Há campos a serem preenchidos.'})
     except KeyError: 
         return jsonify({"status": 1, "msg": "Faltam alguns dados."})
+
+
+@app.route('/api/editarnome', methods =["POST"])        
+def edit_nome():
+    try:
+        auth = request.headers.get('Authorization')
+        nome = request.form['nome']
+        login = db.busca_usuario(request.form['login'])
+        auth = request.headers.get('Authorization')    
+        usuario = Token.retorna_usuario(auth)
+                  
+        if nome and login != "": 
+            if (login != None):                                                                                                               
+                db.altera_nome(request.form['login'],request.form['nome'])
+                return jsonify({'status': 0, 'msg': 'Nome alterado'})               
+            if (usuario == None):
+            #ERRO: Não tem esse token no banco de dados
+                return {'status': -1, 'msg': 'Token inválido.'}
+            else:
+                return jsonify({'status':1, 'msg': 'Usuário Não cadastrado.',})                
+
+        else:
+            return jsonify({'status': 2, 'msg': 'Há campos a serem preenchidos. '})
+        
+    except KeyError:
+        return jsonify({'status': 1, 'msg': 'Erro de auteticação'})
+
 
 @app.route('/api/foto/<login>', methods = ['GET', "POST"])
 def retorna_foto(login):
