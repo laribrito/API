@@ -1,0 +1,60 @@
+<div id="barraLateralE">
+    <!-- Imagem do usuário -->
+    <div id="altImg">
+      <img src="{{ url_for('perfil_avatar', login=logado) }}" id="imagemPerfilPI">
+      <a href="{{url_for('edicao')}}"><div class="half-circle" title="Alterar imagem de perfil"><i class="fas fa-camera" style="font-size: x-large;"></i></div></a>
+    </div>
+    <!-- Link's laterais -->
+      <table>
+          <tr>
+              <td>
+              <a href="{{url_for('index')}}" id="ancoraPagina"><img src="../static/imagens/pi.png" height="30" id="imagemPagina"> Pagina inicial</a>
+              </td>
+          </tr>
+          <tr>
+              <td>
+              <a href="{{url_for('perfil')}}" id="ancoraPagina"><img src="../static/imagens/p.png" height="30" id="imagemPagina">Perfil</a>
+              </td>
+          </tr>
+          <tr>
+              <td>
+              <a href="#" id="ancoraPagina"><img src="../static/imagens/n.png" height="30" id="imagemPagina">Notificacoes</a>
+              </td>
+          </tr>
+      </table>
+    <!-- Botão coxinhar -->
+    <div style="margin-left: 20px; margin-top: 50px;">
+        <a href="#" class="coxinhar" id="coxinha01"><img src="../static/imagens/coxinhar.png" height="60" style="margin-bottom: -17px;">Coxinhar</a>
+    </div>
+  </div>
+
+  <div id="barraLateralD">
+    <!-- Campo de busca -->
+    <form>
+      <input type="text" name=busca id="campoBusca" placeholder="Pesquisar...">
+      <img src="../static/imagens/refri.png" width="70" id="campoBuscaRefri">
+      <input type="submit" value="Pesquisar" style="font-size: small; display: block; margin-left: auto; margin-right: auto; margin-top: -8px;">
+    </form>
+    <!-- Outros conteúdos -->
+    <h1 style="display: block; text-align: center; margin-top: 30%;">Coxitter</h1>
+    <img src="../static/imagens/professor.jpeg" id="professorPI"  onmouseover="hover(this);" onmouseout="unhover(this);"">
+    <h3 style="display: block; text-align: center; font-weight: lighter;">Mestre<br>Peixonauta</h3>
+    <!-- Menu 3 pontinhos -->
+    <div class="menuOpc">
+      <button id="botaoOpc">...</button>
+      <div class="menuOpc-conteudo">
+        <a href="{{url_for('edicao')}}">Editar perfil</a>
+        <a href="{{url_for('sair')}}">Sair</a>
+      </div>
+    </div>
+  </div>
+<!-- Javascript -->
+<script>
+    function hover(element) {
+        element.setAttribute('src', '../static/imagens/queridoProfessor.png');
+    }
+
+    function unhover(element) {
+        element.setAttribute('src', '../static/imagens/professor.jpeg');
+    }
+</script>
