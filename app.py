@@ -316,7 +316,7 @@ def postar_msg():
 
 
 @app.route('/api/buscar_msg/<login>', methods = ["GET"])
-def buscar_msg(self,login):
+def buscar_msg(login):
     usuario = Token.retorna_usuario(request.headers.get('Authorization'))
 
     if usuario == (None):
@@ -325,7 +325,9 @@ def buscar_msg(self,login):
     perfil = db.busca_usuario(login)
     postagens = db.listar_mensagem(perfil['id'])
     lista = []
-    for mensagem in postagens:
-        lista.append(mensagem)
+    
+    for postagem in postagens:
+        item = {'datahora': postagem['data_hora'], 'texto': postagem['corpo']}
+        lista.append(item)
   
     return {'status': 0,  'lista': lista}

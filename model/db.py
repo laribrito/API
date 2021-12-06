@@ -68,6 +68,6 @@ def posta_mensagem(id_user, trend):
 
 def listar_mensagem(id_user):
     con = get_db()
-    return con.execute("SELECT * FROM postagem WHERE id_user = ?",[id_user]).fetchall
+    return con.execute("SELECT * FROM postagem WHERE id_user = ?",[id_user]).fetchall()
 
 
