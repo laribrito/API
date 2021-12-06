@@ -1,3 +1,4 @@
+from re import I
 from flask import Flask, redirect, url_for, session, request, render_template
 from model import db
 from passlib.hash import sha256_crypt
@@ -279,3 +280,38 @@ def retorna_foto(login):
 
 #db.altera_nome(request.form["login"], request.form["nome"])
 #return jsonify({'status': 0, 'msg': 'Nome alterado com sucesso.'})
+
+@app.route('/api/Postagem', methods=["POST"])
+def postar_msg():
+    login = Token.retorna_usuario(request.headers.get('Authorization'))
+    
+    if (login == None):
+        return {'status': -1, 'msg': 'Token Inválido!' }
+  
+    try: 
+        texto = request.form['corpo']
+
+        if texto == "":
+            return {'status': 2 , 'msg': "Mensagem Vazia!"}
+
+        db.posta_mensagem(login['id'], texto)
+        return {'status': 0, 'msg': "Mensagem Postada."}                            
+    
+    except KeyError: 
+        return jsonify({"status": 1, "msg": "Mensagem Não digitada."})
+
+
+@app.route('/api/buscar_msg/<login>', methods = ["GET"])
+def buscar_msg(self,login):
+    usuario = Token.retorna_usuario(request.headers.get('Authorization'))
+
+    if usuario == (None):
+        return {'status': -1, 'msg': 'Token Inválido!'}       
+
+    perfil = db.busca_usuario(login)
+    postagens = db.listar_mensagem(perfil['id'])
+    lista = []
+    for mensagem in postagens:
+        lista.append(mensagem)
+  
+    return {'status': 0,  'lista': lista}
