@@ -59,3 +59,15 @@ def remove_token(token):
     con = get_db()
     con.execute("DELETE FROM tokens WHERE token = ?", [token])
     con.commit()
+    return None 
+
+def posta_mensagem(id_user, trend):
+    con = get_db()
+    con.execute("INSERT INTO postagem (id_user,corpo) VALUES(? , ?)",[id_user, trend])
+    con.commit()
+
+def listar_mensagem(id_user):
+    con = get_db()
+    return con.execute("SELECT * FROM postagem WHERE id_user = ?",[id_user]).fetchall
+
+
