@@ -76,7 +76,7 @@ def seguimento(seguidor,seguindo):
         con = get_db()
         con.execute('INSERT INTO seguidores VALUES(NULL, ? ,?)',[seguidor, seguindo])
         con.commit()
-        return True
+        return True   
     
     except sqlite3.IntegrityError:
         return False
