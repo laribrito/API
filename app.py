@@ -331,3 +331,26 @@ def buscar_msg(login):
         lista.append(item)
   
     return {'status': 0,  'lista': lista}
+
+@app.route('/api/seguir/<login>', methods = ['POST'])
+def seguimento(login):
+    usuario = Token.retorna_usuario(request.headers.get('Authorization'))
+    if usuario == (None):
+        return {'status': -1, 'msg': 'Token Inválido!'}       
+    
+    perfil = db.busca_usuario(login)
+    resultado = db.seguimento(usuario['id'], perfil['id'])
+
+    if resultado == True:
+        return {'status': 0, 'msg': f"Seguindo {login}!"}
+    else:
+        return {'status': 0, 'msg': f"Já segue {login}!"}        
+
+
+
+
+    
+    
+
+
+     

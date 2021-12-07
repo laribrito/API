@@ -1,4 +1,5 @@
 import sqlite3
+from sqlite3.dbapi2 import IntegrityError
 from flask import g
 
 #abre o banco de dados
@@ -69,5 +70,21 @@ def posta_mensagem(id_user, trend):
 def listar_mensagem(id_user):
     con = get_db()
     return con.execute("SELECT * FROM postagem WHERE id_user = ?",[id_user]).fetchall()
+
+def seguimento(seguidor,seguindo):
+    try:
+        con = get_db()
+        con.execute('INSERT INTO seguidores VALUES(NULL, ? ,?)',[seguidor, seguindo])
+        con.commit()
+        return True
+    
+    except sqlite3.IntegrityError:
+        return False
+        
+
+def unfollow(seguidor, seguindo):
+    con = get_db()
+    con.execute('DELETE FROM seguidores WHERE id_seguidor = ? AND id_seguindo = ? ',[seguidor, seguindo])
+    con.commit()
 
 
