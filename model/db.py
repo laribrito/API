@@ -84,7 +84,14 @@ def seguimento(seguidor,seguindo):
 
 def unfollow(seguidor, seguindo):
     con = get_db()
-    con.execute('DELETE FROM seguidores WHERE id_seguidor = ? AND id_seguindo = ? ',[seguidor, seguindo])
+    con.execute('DELETE FROM seguidores WHERE seguidor = ? AND seguindo = ? ',[seguidor, seguindo])
     con.commit()
+
+def esta_seguindo(seguidor, seguindo):
+    con = get_db()
+    return con.execute('SELECT * FROM seguidores WHERE seguidor = ? AND seguindo = ? ',[seguidor, seguindo]).fetchone()
+
+
+
 
 
