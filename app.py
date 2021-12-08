@@ -22,12 +22,19 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = None
 def index(msg=None, erro=None):
     if "usuario" in session: #Verifica se "usuario" existe na sessão
         postagensPerfil=buscar_msg_web(session["usuario"])
+        estouSeguindo = feed_seguindo_web(session["usuario"])
+        for pessoa in estouSeguindo:
+            usuario = db.busca_id(pessoa["id"])
+            postagens = buscar_msg_web(usuario['login'])
+            postagensPerfil += postagens
+        #Ordena pela datahora, do mais recente para o mais antigo
+        postagensPerfil.sort(key=lambda x: x["datahora"], reverse=True)
         return render_template(
-            "PAGINAINICIAL.html", 
-            logado=session["usuario"], 
-            postagens=postagensPerfil,
-            mensagem=msg,
-            erro=erro
+        "PAGINAINICIAL.html", 
+        logado=session["usuario"], 
+        postagens=postagensPerfil,
+        mensagem=msg,
+        erro=erro
         )
     else:
         return render_template("LOGIN.html", 

@@ -517,7 +517,7 @@ form[class=formEdicao] label{
     border-bottom: solid #9EB4E6 1px;
 }
 
-#nomePostagem{
+.nomePostagem{
     position: absolute;
     top: 8px;
 }

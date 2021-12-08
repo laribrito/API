@@ -1,9 +1,9 @@
 <div id=postagem>
     <div id="cabecalhoPostagem">
       <!-- Imagem de perfil -->
-      <img id="imagemPostagem" src="/static/imagens/perfil/larila">
+      <img id="imagemPostagem" src="{{ url_for('perfil_avatar', login=pogin) }}">
       <!-- Nome de login -->
-      <div id="nomePostagem">
+      <div id="nomePostagem{{postagem.id}}" class="nomePostagem">
         <p class="nome">
           <small>
             {{postagem.nome}}
@@ -51,15 +51,16 @@
 </div>
 
 <script>
-//Conserta a posição do nome
-//so funciona aqui. favor não tirar
-var divNome = document.getElementById("nomePostagem");
-var imgPostagem = document.getElementById("imagemPostagem");
-style = window.getComputedStyle(imgPostagem);
-var larguraImg  = style.getPropertyValue('width');
-larguraImg = parseInt(larguraImg,10);
-var dist = larguraImg * 1.2;
-divNome.style.left=dist+"px";
-</script>
+  //Conserta a posição do nome
+  //so funciona aqui. favor não tirar
+    var id = '{{ postagem.id }}';
+    var divNome = document.getElementById("nomePostagem"+id);
+    var imgPostagem = document.getElementById("imagemPostagem");
+    style = window.getComputedStyle(imgPostagem);
+    var larguraImg  = style.getPropertyValue('width');
+    larguraImg = parseInt(larguraImg,10);
+    var dist = larguraImg * 1.2;
+    divNome.style.left=dist+"px";  
+  </script>
 
 {% include 'popupErro.html' %}
