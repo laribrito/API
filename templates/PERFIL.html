@@ -17,12 +17,20 @@
       <section id="espacoPerfil">
         {% if usuario %}
           <a href="{{url_for('edicao')}}" class="coxinhar btnEditar">EDITAR PERFIL</a>
+        {% else %}
+          {% if estaSeguindo %}
+            <a href="javascript: fetch('{{url_for('unfollow_web', login=user.login)}}')" onclick="queroDeixarSeguir();" class="coxinhar btnEditar" id="deixarSeguir">DEIXAR DE SEGUIR</a>
+            <a href="javascript: fetch('{{url_for('seguir_web', login=user.login)}}')" onclick="queroSeguir();" class="coxinhar btnEditar" id="seguir" style="display: none;">SEGUIR</a>
+          {% else %}
+            <a href="javascript: fetch('{{url_for('seguir_web', login=user.login)}}')" onclick="queroSeguir();" class="coxinhar btnEditar" id="seguir">SEGUIR</a>
+            <a href="javascript: fetch('{{url_for('unfollow_web', login=user.login)}}')" onclick="queroDeixarSeguir();" class="coxinhar btnEditar" id="deixarSeguir" style="display: none;">DEIXAR DE SEGUIR</a>
+          {% endif %}
         {% endif %}
         <img id="imagemPerfil" src="{{ url_for('perfil_avatar', login=user.login) }}">
         <p class="nome">{{ user.nome }} <span class="maisClaro">@{{ user.login }}</span></p>
         <div id="seguidores">
-          <p class="nome seguidores">seguindo x</p>
-          <p class="nome seguidores">seguidores y</p>
+          <p class="nome seguidores">seguindo {{numSeguindo|length}}</p>
+          <p class="nome seguidores" id="arroz">seguidores {{numSeguidor|length}}</p>
         </div>
       </section>
       <section id="postagensPerfil">
@@ -34,9 +42,54 @@
           {% endfor %}
           <p class="mensagemFinal">FIM</p>
         {% endif %}
-
       </section>
-    </div> 
+    </div>
+  <script>
+    //conserta a posição da div seguidores
+    el = document.getElementById("seguidores");
+    style = window.getComputedStyle(el);
+    height = style.getPropertyValue('height');
+    el.style.marginTop="-"+height;
+
+  //PARA SEGUIR E DEIXAR DE SEGUIR
+  var ds=document.getElementById("deixarSeguir");
+  var s=document.getElementById("seguir");
+  var ls=document.getElementById("arroz");
+
+  function queroSeguir(){
+    s.style.display="none";
+    ds.style.display="inline";
+
+    //Aumenta a contagem
+    //pega o conteudo do <p>
+    var num = ls.innerText;
+    //seleciona os números
+    num = num.slice(11)
+    //transforma em inteiro
+    num = parseInt(num, 10);
+    //incrementa
+    num += 1;
+    //exibe o novo número
+    ls.innerHTML = "seguidores "+ num;
+  };
+  function queroDeixarSeguir(){
+    ds.style.display="none";
+    s.style.display="inline";
+    
+    //Diminue a contagem
+    //pega o conteudo do <p>
+    var num = ls.innerText;
+    //seleciona os números
+    num = num.slice(11)
+    //transforma em inteiro
+    num = parseInt(num, 10);
+    //decrementa
+    num -= 1;
+    //exibe o novo número
+    ls.innerHTML = "seguidores "+num;
+  };
+  </script>
+
   {% include "rodape.html" %}   
   </body>
 </html>

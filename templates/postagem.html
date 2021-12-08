@@ -22,8 +22,44 @@
     <!-- <p><small class="maisClaro"> resposta a tal postagem </small></p> -->
     <p id="conteudoPostagem">{{postagem.texto}}</p>
     <div id='botoesPostagem'>
-      <i class="far fa-heart" style="position: absolute; left: 0; margin-left: 30%;"></i>
-      <!-- <i class="fas fa-heart"></i> -->
-      <i class="far fa-comments" style='position: absolute; right: 0; margin-right: 30%;'></i>
+      {% if postagem.curtiu %}
+        <a class="far fa-heart ancoraLimpa" id="curtir{{postagem.id}}" 
+          style="position: absolute; left: 0; margin-left: 30%; display: none;"
+          href="javascript: fetch('{{url_for('curtir_web', id_post=postagem.id)}}');
+          queroCurtir({{postagem.id}})" >
+        </a>
+          
+        <a class="fas fa-heart ancoraLimpa" id="deixarCurtir{{postagem.id}}" 
+          style="position: absolute; left: 0; margin-left: 30%;"
+          href="javascript: fetch('{{url_for('descurtir_web', id_post=postagem.id)}}');
+          queroDeixarCurtir({{postagem.id}})" ></a>
+      {% else %}
+        <a class="far fa-heart ancoraLimpa" id="curtir{{postagem.id}}" 
+          style="position: absolute; left: 0; margin-left: 30%;"
+          href="javascript: fetch('{{url_for('curtir_web', id_post=postagem.id)}}');
+          queroCurtir({{postagem.id}})" ></a>
+          
+        <a class="fas fa-heart ancoraLimpa" id="deixarCurtir{{postagem.id}}"
+          style="position: absolute; left: 0; margin-left: 30%; display: none;"
+          href="javascript: fetch('{{url_for('descurtir_web', id_post=postagem.id)}}');
+          queroDeixarCurtir({{postagem.id}})" ></a>
+      {% endif %}
+      <p class="labelCurtidas" id="labelCurtidas{{postagem.id}}" style="position: absolute; left: 0; margin-left: 35%;">{{postagem.quemCurtiu|length}}</p>
+
+      <a class="far fa-comments ancoraLimpa" id="comentario" style='position: absolute; right: 0; margin-right: 30%;'></a>
     </div>
 </div>
+
+<script>
+//Conserta a posição do nome
+//so funciona aqui. favor não tirar
+var divNome = document.getElementById("nomePostagem");
+var imgPostagem = document.getElementById("imagemPostagem");
+style = window.getComputedStyle(imgPostagem);
+var larguraImg  = style.getPropertyValue('width');
+larguraImg = parseInt(larguraImg,10);
+var dist = larguraImg * 1.2;
+divNome.style.left=dist+"px";
+</script>
+
+{% include 'popupErro.html' %}

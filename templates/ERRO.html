@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <title>Erro / Coxitter</title>
+    <!-- Insere configurações da tag 'head' --> 
+    {% include "configHead.html" %}
+  </head>
+  <body style="background-color: white; margin: 0;">
+    <!-- Insere mensagens de erro e sucesso --> 
+    {% include "mensagens.html" %}
+
+    <!-- Insere as barras laterais --> 
+    {% include "barrasLaterais.html" %}
+
+    <div id="meioPagina">
+      <h2>{{tituloErro}}</h2>
+      <a onclick="window.history.back()" class="maisClaro ancoraLimpa" style="cursor: pointer;font-family: Roboto;display: block; text-align: center; margin-top: 10vw;">{{corpoErro}}</a>
+    </div>
+    
+  {% include "rodape.html" %}
+  </body>
+</html>

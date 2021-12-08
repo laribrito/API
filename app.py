@@ -14,67 +14,119 @@ import pytz
 app = Flask(__name__)
 
 app.secret_key = b'jhdakjrtyfuygiuhijebson145shsOhkhhujk666'
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = None
+
+@app.route("/erro/<erro>")
+@app.route("/msg/<msg>")
 @app.route("/")
-def index():
+def index(msg=None, erro=None):
     if "usuario" in session: #Verifica se "usuario" existe na sessão
         postagensPerfil=buscar_msg_web(session["usuario"])
         return render_template(
             "PAGINAINICIAL.html", 
             logado=session["usuario"], 
-            postagens=postagensPerfil
+            postagens=postagensPerfil,
+            mensagem=msg,
+            erro=erro
         )
     else:
-        return render_template("LOGIN.html")
+        return render_template("LOGIN.html", 
+            mensagem=msg,
+            erro=erro)
 
 @app.route("/autenticacao/", methods=["POST"])
 def autenticacao():
     usuario = db.busca_usuario(request.form["login"])
     if usuario == None:
-        return render_template("LOGIN.html", erro="Erro de autenticação")
+        return redirect(url_for("index", erro="Erro de autenticação"))
     elif sha256_crypt.verify(request.form["senha"], usuario["senha"]): #testa com uma função do hash se a senha está correta
         session["usuario"] = request.form["login"]
         session["nome"] = usuario["nome"]
         session["id"] = usuario["id"]
         return redirect(url_for("index"))
     else:
-        return render_template("LOGIN.html", erro="Erro de autenticação")
+        return redirect(url_for("index", erro="Erro de autenticação"))
     
 @app.route("/cadastro/", methods=["GET", "POST"])
 def cadastro():
+    global msg
     if request.method == "POST":
         if request.form["senha1"] == request.form["senha2"]: #confima se as senhas digitadas são iguais
             senha_hash = sha256_crypt.hash(request.form["senha1"]) #efetua o hash na senha
-            db.cadastra_usuario(request.form["login"], senha_hash, request.form["nome"])
-            return render_template("LOGIN.html", mensagem="Usuário cadastrado")
+            funcionou = db.cadastra_usuario(request.form["login"], senha_hash, request.form["nome"])
+            if funcionou:
+                return redirect(url_for("index", msg="Usuário cadastrado"))
+            else:
+                return render_template("CADASTRO.html", erro="Usuário não disponível")
         else:
             return render_template("CADASTRO.html", erro="As senhas não coincidem")
     else:
         return render_template("CADASTRO.html")
 
+@app.route("/perfil/erro/<erro>")
+@app.route("/perfil/msg/<msg>")
 @app.route("/perfil/<nome>")
-@app.route("/perfil")
+@app.route("/perfil", methods = ['get', 'post'])
 def perfil(nome=None):
-    if nome == session["usuario"] or not nome:
-        postagensPerfil=buscar_msg_web(session["usuario"])
-        user = db.busca_usuario(session["usuario"])
-        return render_template(
-            "PERFIL.html", 
-            user=user, 
-            logado=session["usuario"], 
-            usuario=True,
-            postagens=postagensPerfil
-        )
+    if request.method == "GET":
+        if nome == session["usuario"] or not nome:
+            numSeguindo=feed_seguindo_web(session["usuario"])
+            numSeguidor=feed_seguidor_web(session["usuario"])
+            postagensPerfil=buscar_msg_web(session["usuario"])
+            user = db.busca_usuario(session["usuario"])
+            return render_template(
+                "PERFIL.html", 
+                user=user, 
+                logado=session["usuario"], 
+                usuario=True,
+                postagens=postagensPerfil,
+                numSeguindo=numSeguindo,
+                numSeguidor=numSeguidor
+            )
+        else:
+            numSeguindo=feed_seguindo_web(nome)
+            numSeguidor=feed_seguidor_web(nome)
+            estaSeguindo = confere_follow_web(nome)
+            postagensPerfil=buscar_msg_web(nome)
+            user = db.busca_usuario(nome)
+            return render_template(
+                "PERFIL.html", 
+                user=user, 
+                logado=session["usuario"], 
+                usuario=False,
+                postagens=postagensPerfil,
+                estaSeguindo=estaSeguindo,
+                numSeguindo=numSeguindo,
+                numSeguidor=numSeguidor
+            )
     else:
-        postagensPerfil=buscar_msg_web(nome)
-        user = db.busca_usuario(nome)
-        return render_template(
+        busca = request.form["busca"]
+        resultado = db.busca_usuario(busca)
+        if resultado == None:
+            return render_template(
+                "ERRO.html", 
+                tituloErro="Não tem ninguém com esse login",
+                corpoErro="Retorne e tente novamente!",
+                logado=session["usuario"])
+        else:
+            numSeguindo=feed_seguindo_web(busca)
+            numSeguidor=feed_seguidor_web(busca)
+            estaSeguindo = confere_follow_web(busca)
+            postagensPerfil=buscar_msg_web(busca)
+            user = db.busca_usuario(busca)
+            return render_template(
             "PERFIL.html", 
             user=user, 
             logado=session["usuario"], 
             usuario=False,
-            postagens=postagensPerfil
-        )
+            postagens=postagensPerfil,
+            estaSeguindo=estaSeguindo,
+            numSeguindo=numSeguindo,
+            numSeguidor=numSeguidor
+            )
 
+@app.route("/perfil/edicao/erro/<erro>")
+@app.route("/perfil/edicao/msg/<msg>")
 @app.route("/perfil/edicao",methods = ['get'])
 def edicao():
     user = db.busca_usuario(session['usuario'])
@@ -86,14 +138,7 @@ def editar_nome():
     db.altera_nome(session["usuario"], request.form["nome"])
     user = db.busca_usuario(session["usuario"])
     postagensPerfil=buscar_msg_web(session["usuario"])
-    return render_template(
-        "PERFIL.html", 
-        user=user, 
-        logado=session["usuario"], 
-        usuario=True, 
-        mensagem="Nome editado com sucesso",
-        postagens=postagensPerfil
-    )
+    return redirect(url_for("perfil",mensagem="Nome editado com sucesso"))
 
 @app.route("/perfil/editar_senha", methods=["post"])
 def editar_senha():
@@ -101,15 +146,10 @@ def editar_senha():
         senha_hash = sha256_crypt.hash(request.form["senha1"])
         db.altera_senha(session["usuario"], senha_hash) #efetua o hash na senha
         user = db.busca_usuario(session["usuario"])
-        return render_template(
-            "PERFIL.html", 
-            user=user, 
-            logado=session["usuario"], 
-            usuario=True, 
-            mensagem="Senha alterada com sucesso")
+        return redirect(url_for("perfil", mensagem="Senha alterada com sucesso"))
     else:
         user = db.busca_usuario(session['usuario'])
-        return render_template("EDICAO.html", logado=session["usuario"],user = user, erro="As senhas não coincidem")
+        return redirect(url_for("edicao", erro="As senhas não coincidem"))
 
 # Pasta com as imagens
 app.config['PERFIL_FOLDER'] = 'static/imagens/perfil'
@@ -127,37 +167,18 @@ def perfil_foto():
     postagens = buscar_msg_web(session['usuario'])
     if "foto" not in request.files:
         user = db.busca_usuario(session["usuario"])
-        return render_template(
-            "PERFIL.html", 
-            user=user, 
-            logado=session["usuario"], 
-            usuario=True, 
-            erro="Nenhum arquivo enviado",
-            postagens=postagens
-        )
+        return redirect(url_for("edicao",erro="Nenhum arquivo enviado"))
+
     arquivo = request.files["foto"]
     if arquivo.filename == '':
         user = db.busca_usuario(session["usuario"])
-        return render_template(
-            "PERFIL.html", 
-            user=user, 
-            logado=session["usuario"], 
-            usuario=True, 
-            erro="Nenhum arquivo selecionado",
-            postagens=postagens
-        )
+        return redirect(url_for("edicao",erro="Nenhum arquivo selecionado"))
+
     if arquivo_permitido(arquivo.filename):
         arquivo.save(os.path.join(app.config['PERFIL_FOLDER'],
         session["usuario"]))
         user = db.busca_usuario(session["usuario"])
-        return render_template(
-            "PERFIL.html", 
-            user=user, 
-            logado=session["usuario"], 
-            usuario=True, 
-            mensagem="Foto de perfil alterada com sucesso",
-            postagens=postagens
-        )
+        return redirect(url_for("perfil",mensagem="Foto de perfil alterada com sucesso"))
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def arquivo_permitido(filename):
@@ -171,34 +192,17 @@ def sair():
     return redirect(url_for("index"))
  
 @app.route('/Postagem', methods=["POST"])
-def postar_msg_web():  
-    postagensPerfil=buscar_msg_web(session["usuario"])
+def postar_msg_web():
     try: 
         texto = request.form['corpo']
+        texto = texto.strip()
 
         if texto == "":
-            
-            return render_template(
-                "PAGINAINICIAL.html", 
-                logado=session["usuario"], 
-                postagens=postagensPerfil,
-                erro="Mensagem vazia!"
-            )
+            return redirect(url_for("index", erro="Mensagem vazia"))
         db.posta_mensagem(session["id"], texto)
-        return render_template(
-            "PAGINAINICIAL.html", 
-            logado=session["usuario"], 
-            postagens=postagensPerfil,
-            mensagem="Mensagem postada!"
-        )   
-    
+        return redirect(url_for("index", msg="Mensagem postada"))
     except KeyError: 
-        return render_template(
-            "PAGINAINICIAL.html", 
-            logado=session["usuario"], 
-            postagens=postagensPerfil,
-            erro="Mensagem não digitada!"
-        )
+        return redirect(url_for("index", erro="Mensagem não digitada"))
 
 #função que retorna as mensagens de um usuário pelo login dele
 def buscar_msg_web(login):
@@ -214,12 +218,22 @@ def buscar_msg_web(login):
         data = hora_utc.astimezone(pytz.timezone('America/Bahia'))
         dataFormatada=data.strftime("%d de %b de %Y · %H:%M")
 
+        #verifica se o usuario curtiu a mensagem
+        id_post = postagem["id_post"]
+        curtiu = verifica_curtida_web(id_post)
+
+        #Passa os ids que curtiram essa postagem
+        curtidas=quantCurtidas(id_post)
+
         #Criação do item postagem
         item = {
-            'datahora': dataFormatada, 
+            'datahora': dataFormatada,
+            "id": id_post,
             'texto': postagem['corpo'],
             'nome': perfil['nome'],
-            'login': login
+            'login': login,
+            "curtiu": curtiu,
+            "quemCurtiu": curtidas
         }
         lista.append(item)
 
@@ -231,7 +245,86 @@ def buscar_msg_web(login):
 @app.route('/postagem')
 def exibirPostagem():
     return render_template('POSTAGEM.html')
-  
+
+@app.route('/seguir/<login>', methods = ['get'])
+def seguir_web(login):
+    perfil = db.busca_usuario(login)
+    if perfil == None:
+        return f"Usuário {login} não existe!"
+    resultado = db.seguimento(session['id'], perfil['id'])
+
+    if resultado == True:
+        return f"Seguiu {login}!"
+    else:        
+        return f"Já segue {login}!"
+
+@app.route('/unfollow/<login>', methods = ['get']) # como usar o método delete?
+def unfollow_web(login):    
+    perfil = db.busca_usuario(login)
+    if perfil == None:
+        return f"Usuário {login} não existe!"
+    else:
+        db.unfollow(session['id'], perfil['id']) 
+        return f"Deixou de seguir {login}!"
+
+def confere_follow_web(login):   
+    perfil = db.busca_usuario(login)
+    if perfil == None:
+        return f"Usuário {login} não existe!"
+    resultado = db.esta_seguindo(session['id'],perfil['id'])
+    if resultado == None:
+        return False
+    else:
+        return True
+
+def feed_seguindo_web(login):
+    perfil = db.busca_usuario(login)
+    resultado = db.feed_seguindo(perfil['id'])
+    lista = []
+    for seguindo in resultado:
+        item = {'id': seguindo['seguindo']}
+        lista.append(item)
+    return lista
+
+def feed_seguidor_web(login):
+    perfil = db.busca_usuario(login)
+    resultado = db.feed_seguidor(perfil['id'])
+    lista = []
+    for seguidor in resultado:
+        item = {'id': seguidor['seguidor']}
+        lista.append(item)
+    return lista
+
+def quantCurtidas(id_post):
+    resultado = db.retorna_quant_curtidas(id_post)
+    lista = []
+    for curtida in resultado:
+        item = {'id': curtida['id_user']}
+        lista.append(item)
+    return lista
+
+@app.route('/curtir/<id_post>', methods = ['get'])
+def curtir_web(id_post):
+    resultado = db.curtir(session['id'], id_post)
+
+    if resultado == True:
+        return {'status': 0, 'msg': f"Curtiu!"}   
+    
+    else:        
+        return {'status': 1, 'msg': f"Postagem já curtida ou inexistente!"} 
+
+def verifica_curtida_web(id_post):    
+    resultado = db.esta_curtindo(session['id'], id_post)
+
+    if resultado == None:
+        return False  
+    else:        
+        return True
+
+@app.route('/descurtir/<id_post>', methods = ['get'])
+def descurtir_web(id_post):
+    db.descurtir(session['id'], id_post) 
+    return {'status': 0, 'msg': f"Deixou de curtir!"}           
 
 ##########################################API##################################################################################################################
 
@@ -499,13 +592,13 @@ def unfollow(login):
     return {'status': 0, 'msg': f"Deixou de seguir {login}!"}     
 
 
-@app.route('/api/feed_SEGUIDORES/',methods = ['GET'])
-def feed():
+@app.route('/api/feed_SEGUIDORES/<login>',methods = ['GET'])
+def feed(login):
     usuario = Token.retorna_usuario(request.headers.get('Authorization'))
     if usuario == (None):
         return {'status': -1, 'msg': 'Token Inválido!'} 
-   
-    resultado = db.feed_seguindo(usuario['id'])
+    perfil = db.busca_usuario(login)
+    resultado = db.feed_seguindo(perfil['id'])
     
    
     lista = []

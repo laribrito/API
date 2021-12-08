@@ -2,7 +2,7 @@
     <!-- Imagem do usuário -->
     <div id="altImg">
       <img src="{{ url_for('perfil_avatar', login=logado) }}" id="imagemPerfilPI">
-      <a href="{{url_for('edicao')}}"><div class="half-circle" title="Alterar imagem de perfil"><i class="fas fa-camera" style="font-size: x-large;"></i></div></a>
+      <a href="{{url_for('edicao')}}"><div class="half-circle" id="meioCirculo" title="Alterar imagem de perfil"><i class="fas fa-camera" style="font-size: 1.5vw;"></i></div></a>
     </div>
     <!-- Link's laterais -->
       <table id='linksLaterais'>
@@ -35,7 +35,7 @@
           <tr>
               <td>
                 <div>
-                  <a href="#" class="ancoraPagina">
+                  <a href="#" class="ancoraPagina" id="Notificacoes">
                     <picture id="imagemPagina">
                       <source media="(min-width:1200px)" srcset="../static/imagens/n.png" height="30">
                       <img src="">
@@ -54,15 +54,15 @@
 
   <div id="barraLateralD">
     <!-- Campo de busca -->
-    <form>
+    <form method="post" action="{{url_for('perfil')}}">
       <div style="position: relative">
-        <input type="text" name=busca id="campoBusca" placeholder="Pesquisar...">
+        <input type="text" name=busca id="campoBusca" placeholder="Pesquisar o login de um usuário">
         <picture id="campoBuscaRefri">
-          <source media="(min-width:1200px)" srcset="../static/imagens/refri.png" width="30">
+          <source media="(min-width:1440px)" srcset="../static/imagens/refri.png" width="30">
           <img src="">
         </picture>
       </div>
-      <input type="submit" value="Pesquisar" id="btnPesquisar" disabled>
+      <input type="submit" value="Pesquisar" id="btnPesquisar">
     </form>
     <!-- Outros conteúdos -->
     <h1 style="display: block; text-align: center; margin-top: 30%;">Coxitter</h1>
@@ -90,17 +90,34 @@
 
     //Conserta a altura da imagem de perfil
     var el = document.getElementById("imagemPerfilPI");
-    var widthImgPerfil = el.offsetWidth;
+    var style = window.getComputedStyle(el);
+    //width é uma string
+    var widthImgPerfil = style.getPropertyValue('width');
     el.style.height=widthImgPerfil;
 
     //Conserta a distancia do topo para botões laterais
     el = document.getElementById("linksLaterais");
+    //retira o 'px' do fim da string
+    widthImgPerfil =widthImgPerfil.slice(0,widthImgPerfil.length-2);
+    //transforma em inteiro
+    widthImgPerfil =parseInt(widthImgPerfil, 10);
+    //calcula a distancia
     var distancia = widthImgPerfil * 1.4;
     el.style.marginTop=distancia+"px";
 
+    //conserta a altura do link da imagem acima
+    widthImgPerfil = parseInt(widthImgPerfil, 10);
+    var novaAltura = widthImgPerfil/2;
+    var meioCirculo = document.getElementById("meioCirculo");
+    meioCirculo.style.top=(novaAltura+40)+"px";
+    novaAltura -= 10;
+    meioCirculo.style.height=novaAltura+"px";
+    console.log(widthImgPerfil)
+    console.log(novaAltura)
+
     //Conserta a distancia do menu inferior direito (Menu Opções)
     el = document.getElementById("botaoOpc");
-    var style = window.getComputedStyle(el),
+    style = window.getComputedStyle(el),
     right = style.getPropertyValue('right');
     el.style.bottom=right;
 
@@ -118,3 +135,5 @@
 </script>
 
 {% include "popupCoxinhar.html" %}
+
+{% include 'popupErro.html' %}

@@ -1,6 +1,7 @@
 import sqlite3
 from sqlite3.dbapi2 import IntegrityError
 from flask import g
+from flask.app import Flask
 
 #abre o banco de dados
 def get_db():
@@ -27,10 +28,14 @@ def busca_id(id):
 
 # Cadastra um usuário no banco
 def cadastra_usuario(login, senha, nome):
-    con = get_db()
-    con.execute("INSERT INTO usuario VALUES(NULL, ?, ?, ?)", \
-    [login, senha, nome])
-    con.commit()
+    try:
+        con = get_db()
+        con.execute("INSERT INTO usuario VALUES(NULL, ?, ?, ?)", \
+        [login, senha, nome])
+        con.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
 
 # Altera o nome de um usuário
 def altera_nome(login, nome):
@@ -99,6 +104,10 @@ def feed_seguindo(seguidor):
     con = get_db()
     return con.execute('SELECT * FROM seguidores WHERE seguidor = ?', [seguidor]).fetchall()
 
+def feed_seguidor(seguindo):
+    con = get_db()
+    return con.execute('SELECT * FROM seguidores WHERE seguindo = ?', [seguindo]).fetchall()
+
 def curtir(usuario, postagem):
     try:
         con = get_db()
@@ -108,11 +117,14 @@ def curtir(usuario, postagem):
     except sqlite3.IntegrityError:
         return False
 
-
 def descurtir(usuario, postagem):
     con = get_db()
     con.execute('DELETE FROM curtidas WHERE id_postagem = ? AND id_user = ?',[postagem, usuario])
     con.commit()
+
+def retorna_quant_curtidas(id_post):
+    con = get_db()
+    return con.execute('SELECT * FROM curtidas WHERE id_postagem = ?', [id_post]).fetchall()
 
 def esta_curtindo(usuario,postagem):
     con = get_db()
