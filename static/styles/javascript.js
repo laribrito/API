@@ -4,6 +4,12 @@ setTimeout(function(){
     el.style.display="None";
 },5000);
 
+//essa função encaminha para o perfil
+function paraPerfil(login){
+    window.location.href="/perfil/"+login;
+    console.log(login);
+};
+
 //PARA CURTIR E DESCURTIR
 function queroCurtir(id){
     //esconde o botão que foi apertado

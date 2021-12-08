@@ -511,6 +511,7 @@ form[class=formEdicao] label{
     margin: 10px 20px;
     object-fit: cover;
     object-position: top;
+    cursor: pointer;
 }
 
 #postagem{
@@ -520,6 +521,7 @@ form[class=formEdicao] label{
 .nomePostagem{
     position: absolute;
     top: 8px;
+    cursor: pointer;
 }
 
 #datahora{
