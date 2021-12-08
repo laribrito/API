@@ -1,13 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
     <title>Login</title>
-	<!-- Insere icone do site --> 
-    {% include "icone.html" %}
-    <link href="../static/styles/estilo.css" rel="stylesheet"/>
-
+	<!-- Insere configurações da tag 'head' --> 
+    {% include "configHead.html" %}
   </head>
   <body style="text-align: center;">
 	<h1 style="margin-top: 3%;">Cadastro Coxitter<br>
@@ -31,5 +27,6 @@
 		
 	<img class="swing" src="../static/imagens/Cantinho-Cortado.png" alt="decoração 1" id="imagemPequenaLogin">
 	<img class="swing" src="../static/imagens/Canteba-Cortado.png" alt="decoração 2" id="imagemGrandeLogin">
-  </body>
+{% include "rodape.html" %}
+</body>
 </html>

@@ -1,18 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
     <title>Login</title>
-	<!-- Insere icone do site --> 
-    {% include "icone.html" %}
-    <link href="../static/styles/estilo.css" rel="stylesheet"/>
-
+	<!-- Insere configurações da tag 'head' --> 
+    {% include "configHead.html" %}
   </head>
   <body style="text-align: center;">
 	<h1 style="margin-top: 7%;">Coxitter</h1>
 	{% include "mensagens.html" %}
-	<form action="{{ url_for('autenticacao') }}" class="campo" method="post">
+	<form action="{{ url_for('autenticacao') }}" class="campo" id="caixaLogin" method="post">
 		  <label for="login">Login:</label><br>
 		  <input type="text" name = "login" id="login" required><br>
 		  
@@ -21,8 +17,13 @@
 
 		  <a href="{{url_for('cadastro')}}">Novo cadastro</a>
 		  <input type="submit" value="Entrar">		
-	</form>   
+	</form>
+	<div id='mensagemErroLogin'>
+		<h2>Temos um aplicativo mobile!</h2>
+		<p>Nosso aplicativo te entenderá melhor! Não deixe de participar do Coxitter! Aplicativo disponível em: </p>
+	</div>
 	<img class="swing" src="../static/imagens/Cantinho-Cortado.png" alt="decoração 1" id="imagemPequenaLogin">
 	<img class="swing" src="../static/imagens/Canteba-Cortado.png" alt="decoração 2" id="imagemGrandeLogin">
-  </body>
+{% include "rodape.html" %}  
+</body>
 </html>

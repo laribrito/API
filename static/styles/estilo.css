@@ -7,12 +7,18 @@ h1, h3, label{
     font-family: Lastica;
 }
 
+h1{
+    font-size: 2vw;
+}
+
 h4 {
     background-color: #96BADF;
     color: white;
     font-family: "News Cycle";
     padding: 5px 30px;
-    font-size: 20pt;
+    display: block;
+    /* font-size: 20pt; */
+    font-size: 2vw;
 }
 
 h2{
@@ -26,13 +32,14 @@ h2{
 
 p{
     font-family: Roboto, "Sans serif";
+    font-size: 1.5vw;
     margin: 0;
     padding: 5px 15px;
 }
 
 input[type="submit"]{
     font-family: Lastica;
-    font-size: 12pt;
+    font-size: 1vw;
     background-color: #163985;
     color: white;
     padding: 0.5em 2em;
@@ -50,7 +57,7 @@ input[type="submit"]:active{
 }
 
 a{
-    font-size: 12pt;
+    font-size: 1.2vw;
     font-family: Lastica;
     background-color: #B2C5ED;
     padding: 0.5em 2em;
@@ -89,19 +96,10 @@ body{
     background-color: #3686A4;
 }
 
-td{
-    height: 60px;
-}
-
-table{
-    margin-left: 30px;
-    margin-top: 170px;
-}
-
 .nome{
     padding: 10px;
     margin-left: 20px;
-    font-size: x-large;
+    font-size: 2vw;
 }
 
 .maisClaro{
@@ -111,8 +109,10 @@ table{
 
 .campo{
     background-color: white;
-    margin: 0 33%;
-    padding: 4% 0;
+    display: block;
+    margin: auto;
+    width:max-content;
+    padding: 4% 10px;
     border-radius: 12px;
     box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;  
 }
@@ -130,8 +130,9 @@ table{
 }
 
 #coxinha01{
-    padding: 20px 25px 20px 10px;
-    font-size: x-large;
+    padding: 2vw 2.5vw 2vw 1vw;
+    border-radius: 10vw;
+    font-size: 1.5vw;
 }
 
 #imagemPequenaLogin{
@@ -146,6 +147,7 @@ table{
     bottom: 0;
     right: 0;
     width: 20%;
+    height: 100%;
 }
 
 #barraLateralE{
@@ -154,15 +156,16 @@ table{
     height: 98%;
     position: fixed;
     margin: 5px 0 5px 5px;
+    z-index: 1;
 }
 
     #imagemPerfilPI{
-        width: 150px;
-        height: 150px;
+        width: 50%;
+        /* height: 50%; */
         border-radius: 50%;
-        position: fixed;
-        left: 6%;
-        top: 30px;
+        position: absolute;
+        left: 25%;
+        top: 40px;
         object-fit: cover;
         object-position: top;
     }
@@ -174,10 +177,10 @@ table{
         border-bottom-left-radius: 100px;
         border-bottom-right-radius: 100px;
         border-top: 0;
-        width: 150px;
+        width: 50%;
         height: 63px;
-        position: fixed;
-        left: 6%;
+        position: absolute;
+        left: 25%;
         top: 107px;
         opacity: 0;
         padding-top: 10px;
@@ -196,22 +199,53 @@ table{
     }
 
     #imagemPagina{
-        margin-bottom: -10px;
-        margin-right: 5px;
+        margin-bottom: 100px;
+        position: absolute;
+        background-color: blue;
+        display: none;
+    }
+    tr{
+        /* background-color: violet; */
     }
 
-    #ancoraPagina{
-        background-color: #E9ECF6;
+    td{
+        margin-bottom: 8%;
+    }
+
+    td>div{
+        /* background-color: #8295d1; */
         border-radius: 50px;
-        margin-bottom: 50px;
-        padding: 15px 10px;
+        padding: 2% 0 2% 0;
+        display: inline-block
+    }
+    
+    table{
+        /* margin-left: 1%; */
+        text-align: center;
+        vertical-align: middle;
+        margin: auto;
+        width: 60px;
+        /* background-color: brown; */
+        border-spacing: 2vw;
     }
 
-    #ancoraPagina:hover{
+    .ancoraPagina{
+        background: none;
+        font-size: 1.2vw;
+    }
+
+    .ancoraPagina:hover{
+        background: none;
+    }
+
+    .ancoraPagina:active{
+        background: none;
+    }
+    td>div:hover{
         background-color: #d1d1d1;
     }
 
-    #ancoraPagina:active{
+    td>div:active{
         background-color: #9EB4E6;
     }
 
@@ -222,22 +256,34 @@ table{
     position: fixed;
     margin: 5px 5px 5px 0;
     right: 0;
+    z-index: 1;
 }
+    #btnPesquisar{
+        font-size: 1vw; 
+        display: block; 
+        margin-left: 15%; 
+        margin-right: 15%;
+        padding: 3%;
+        width: 70%;
+        margin-top: -8px;
+    }
 
     #campoBusca{
         background-color: white;
         display: block;
-        margin-left: auto;
-        margin-right: auto;
+        margin-left: 15%;
+        margin-right: 15%;
+        width: 70%;
         margin-top: 30px;
     }
 
     #campoBuscaRefri{
         position: absolute;
         left: 0;
-        top: 0;
-        margin-top: 5px;
-        margin-left: 5px;
+        bottom: 0;
+        margin-bottom: -8px;
+        margin-left: 10%;
+        /* background-color: blue; */
     }
 
     #professorPI{
@@ -251,11 +297,10 @@ table{
     #botaoOpc{
         background: none;
         border: none;
-        font-size: 40px;
+        font-size: 3vw;
         cursor: pointer;
         position: fixed; 
-        right: 30px;
-        bottom: 30px;
+        right: 1vw;
     }
 
      
@@ -268,8 +313,8 @@ table{
         visibility: hidden;
         position: fixed;
         position: fixed; 
-        right: 30px;
-        bottom: 60px;
+        right: 1vw;
+        bottom: 5vw;
         background-color: #f1f1f1;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     }
@@ -299,19 +344,25 @@ table{
     border-bottom: solid #9EB4E6 5px;
 }
 
+.mensagemFinal{
+    color: #b1b4be;
+    display: block;
+    text-align: center;
+}
+
 #imagemPerfil{
     border-radius: 100%;
     width: 120px;
     height: 120px;
     border: solid black 2px;
-    margin: 10px 20px;
+    margin: 20px 25px;
     object-fit: cover;
     object-position: top;
 }
 
 .btnEditar{
     font-family: "News Cycle";
-    font-size: small;
+    font-size: 1vw;
     cursor: pointer;
     float: right;
     margin: 10px 20px;
@@ -324,7 +375,7 @@ table{
 }
 
 .seguidores{
-    font-size: small;
+    font-size: 1.2vw;
     font-weight: bolder;
 }
 
@@ -347,6 +398,7 @@ form[class=formEdicao] label{
     top: 10px;
     left: 40%;
     padding: 10px 40px;
+    z-index: 5;
 }
 
 .erro{
@@ -424,4 +476,84 @@ form[class=formEdicao] label{
         animation: swing 1s ease;
         -webkit-animation-iteration-count: 1;
         animation-iteration-count: 1;
+}
+/* Postagem */
+
+#botoesPostagem{
+    font-size:2vw;
+    position: relative;
+    height: 50px;
+    margin-top: 20px;
+}
+
+#imagemPostagem{
+    border-radius: 100%;
+    width: 80px;
+    height: 80px;
+    border: solid black 2px;
+    margin: 10px 20px;
+    object-fit: cover;
+    object-position: top;
+}
+
+#postagem{
+    border-bottom: solid #9EB4E6 1px;
+}
+
+#nomePostagem{
+    position: absolute;
+    left: 100px;
+    top: 8px;
+    width: 80%;
+}
+
+#datahora{
+    color: #b1b4be;
+    float: right;
+    font-size:1.1vw;
+    margin-top: 30px;
+    margin-right: 5%;
+}
+
+#cabecalhoPostagem{
+    position: relative;
+    margin-top: 10px;
+}
+
+/* #conteudoPostagem{
+    text-align: justify;
+}*/
+
+#linkPostagem{
+    font-size: small;
+    font-family: Roboto;
+    background: none;
+    padding: 0px;
+    font-style: italic;
+    color: #818fbe;
+    text-decoration: none;
+    margin-right: 0px;
+    border-radius: 0;
+}
+
+/* Página inicial */
+
+#coxinharPI{
+    position: relative;
+}
+
+#btnCoxinharPI{
+    position: absolute; 
+    right: 0; 
+    bottom: 0;
+    margin: 0 20px 10px 0;
+    background-color: #3686A4;
+    border-radius: 50px;
+    color: white;
+    font-weight: bold;
+}
+
+#btnCoxinharPI:active{
+    color: #3686A4;
+    background-color: white;
 }

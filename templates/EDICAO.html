@@ -1,14 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
     <title>Perfil / Coxitter</title>
-    <!-- Insere icone do site --> 
-    {% include "icone.html" %}
-    <link href="../static/styles/estilo.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=News Cycle|Roboto">
-    <script src="https://kit.fontawesome.com/17a3127d7b.js" crossorigin="anonymous"></script>
+    <!-- Insere configurações da tag 'head' --> 
+    {% include "configHead.html" %}
   </head>
   <body style="background-color: white; margin: 0;">
     <!-- Insere mensagens de erro e sucesso --> 
@@ -55,5 +50,6 @@
         </div>
       </div>
     </div>
+{% include "rodape.html" %}
   </body>
 </html>

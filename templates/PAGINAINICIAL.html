@@ -1,14 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
     <title>Página inicial / Coxitter</title>
-    <!-- Insere icone do site --> 
-    {% include "icone.html" %}
-    <link href="../static/styles/estilo.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=News Cycle">
-    <script src="https://kit.fontawesome.com/17a3127d7b.js" crossorigin="anonymous"></script>
+    <!-- Insere configurações da tag 'head' --> 
+    {% include "configHead.html" %}
   </head>
   <body style="background-color: white; margin: 0;">
     <!-- Insere mensagens de erro e sucesso --> 
@@ -19,7 +14,21 @@
 
     <div id="meioPagina">
       <h2>PÁGINA INICIAL</h2>
+      <section id='coxinharPI'>
+        <form method="post" action="{{url_for('postar_msg_web')}}">
+          <textarea rows=6 maxlength="300" name='corpo' placeholder="Coxinhe sobre o que está acontecendo..."
+          style="z-index: -1;" required></textarea>
+          <input type='submit' value="Coxinhar" id='btnCoxinharPI'>
+          <hr style="border: none;border-bottom: solid #9EB4E6 5px; z-index: -1;">
+        </form>
+      </section>
+      <section id="postagensPaginaInicial">
+        {% for postagem in postagens %}
+          {% include 'postagem.html' %}
+        {% endfor %}
+      </section>
     </div>
     
+  {% include "rodape.html" %}
   </body>
 </html>

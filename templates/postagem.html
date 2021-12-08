@@ -1,0 +1,29 @@
+<div id=postagem>
+    <div id="cabecalhoPostagem">
+      <!-- Imagem de perfil -->
+      <img id="imagemPostagem" src="/static/imagens/perfil/larila">
+      <!-- Nome de login -->
+      <div id="nomePostagem">
+        <p class="nome">
+          <small>
+            {{postagem.nome}}
+            <br>
+            <span class="maisClaro" style="margin-left: 0px;">
+              @{{postagem.login}}
+            </span>
+          </small>
+        </p>
+      </div>
+      <div id="datahora">
+        <span>{{postagem.datahora}}</span>
+      </div>
+    </div>
+    <!-- Conteúdo -->
+    <!-- <p><small class="maisClaro"> resposta a tal postagem </small></p> -->
+    <p id="conteudoPostagem">{{postagem.texto}}</p>
+    <div id='botoesPostagem'>
+      <i class="far fa-heart" style="position: absolute; left: 0; margin-left: 30%;"></i>
+      <!-- <i class="fas fa-heart"></i> -->
+      <i class="far fa-comments" style='position: absolute; right: 0; margin-right: 30%;'></i>
+    </div>
+</div>
