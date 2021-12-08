@@ -21,6 +21,10 @@ def busca_usuario(login):
     con = get_db()
     return con.execute("SELECT * FROM usuario WHERE login = ?",[login]).fetchone()
 
+def busca_id(id):
+    con = get_db()
+    return con.execute('SELECT * FROM usuario WHERE id = ?', [id]).fetchone()   
+
 # Cadastra um usuário no banco
 def cadastra_usuario(login, senha, nome):
     con = get_db()
@@ -69,7 +73,7 @@ def posta_mensagem(id_user, trend):
 
 def listar_mensagem(id_user):
     con = get_db()
-    return con.execute("SELECT * FROM postagem WHERE id_user = ?",[id_user]).fetchall()
+    return con.execute("SELECT * FROM postagem WHERE id_user = ? ORDER by data_hora DESC",[id_user]).fetchall()
 
 def seguimento(seguidor,seguindo):
     try:
@@ -90,6 +94,37 @@ def unfollow(seguidor, seguindo):
 def esta_seguindo(seguidor, seguindo):
     con = get_db()
     return con.execute('SELECT * FROM seguidores WHERE seguidor = ? AND seguindo = ? ',[seguidor, seguindo]).fetchone()
+
+def feed_seguindo(seguidor):
+    con = get_db()
+    return con.execute('SELECT * FROM seguidores WHERE seguidor = ?', [seguidor]).fetchall()
+
+def curtir(usuario, postagem):
+    try:
+        con = get_db()
+        con.execute('INSERT INTO curtidas VALUES(NULL, ?, ?)',[postagem, usuario])
+        con.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+
+
+def descurtir(usuario, postagem):
+    con = get_db()
+    con.execute('DELETE FROM curtidas WHERE id_postagem = ? AND id_user = ?',[postagem, usuario])
+    con.commit()
+
+def esta_curtindo(usuario,postagem):
+    con = get_db()
+    return con.execute('SELECT * FROM curtidas WHERE id_postagem = ? AND id_user = ?', [postagem,usuario]).fetchone()
+
+def verifica_post(id_postagem):
+    con = get_db()
+    return con.execute('SELECT FROM postagens WHERE id_postagem = ?',[id_postagem]).fetchone()
+
+        
+
+
 
 
 

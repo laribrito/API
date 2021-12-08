@@ -378,16 +378,59 @@ def unfollow(login):
     return {'status': 0, 'msg': f"Deixou de seguir {login}!"}     
 
 
+@app.route('/api/feed_SEGUIDORES/',methods = ['GET'])
+def feed():
+    usuario = Token.retorna_usuario(request.headers.get('Authorization'))
+    if usuario == (None):
+        return {'status': -1, 'msg': 'Token Inválido!'} 
+   
+    resultado = db.feed_seguindo(usuario['id'])
+    
+   
+    lista = []
+    
+    for seguindo in resultado:
+        item = {'id': seguindo['seguindo'],}
+        lista.append(item)
+  
+    return {'status': 0,  'lista': lista}
 
+@app.route('/api/curtir/<id_post>', methods = ['POST'])
+def curtir(id_post):
+    usuario = Token.retorna_usuario(request.headers.get('Authorization'))
+    if usuario == (None):
+        return {'status': -1, 'msg': 'Token Inválido!'}       
+    
 
+    resultado = db.curtir(usuario['id'], id_post)
 
-         
+    if resultado == True:
+        return {'status': 0, 'msg': f"Curtiu!"}   
+    
+    else:        
+        return {'status': 1, 'msg': f"Postagem já curtida ou inexistente!"} 
 
-
-
-
+@app.route('/api/verifica_curtida/<id_post>', methods = ['GET'])
+def varifica_curtida(id_post):
+    usuario = Token.retorna_usuario(request.headers.get('Authorization'))
+    if usuario == (None):
+        return {'status': -1, 'msg': 'Token Inválido!'}       
     
     
+    resultado = db.esta_curtindo(usuario['id'], id_post)
 
+    if resultado == None:
+        return {'status': 1, 'msg': f"Não está Curtindo!"}   
+    
+    else:        
+        return {'status': 1, 'msg': f"Está Curtindo!"}
 
-     
+@app.route('/api/descurtir/<id_post>', methods = ['DELETE'])
+def descurtir(id_post):
+    usuario = Token.retorna_usuario(request.headers.get('Authorization'))
+    if usuario == (None):
+        return {'status': -1, 'msg': 'Token Inválido!'}       
+    
+    
+    db.descurtir(usuario['id'], id_post) 
+    return {'status': 0, 'msg': f"Deixou de curtir!"}           
