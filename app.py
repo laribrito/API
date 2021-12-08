@@ -453,4 +453,62 @@ def buscar_msg(login):
   
     return {'status': 0,  'lista': lista}
 
+@app.route('/api/seguir/<login>', methods = ['POST'])
+def seguir(login):
+    usuario = Token.retorna_usuario(request.headers.get('Authorization'))
+    if usuario == (None):
+        return {'status': -1, 'msg': 'Token Inválido!'}       
+    
+    perfil = db.busca_usuario(login)
+    if perfil == None:
+        return {'status': 2, 'msg': f"Usuário {login} não existe!"}  
+    resultado = db.seguimento(usuario['id'], perfil['id'])
 
+    if resultado == True:
+        return {'status': 0, 'msg': f"Seguiu {login}!"}   
+    
+    else:        
+        return {'status': 1, 'msg': f"Já segue {login}!"} 
+
+@app.route('/api/confere_follow/<login>', methods = ['GET'])
+def confere_follow(login):
+    usuario = Token.retorna_usuario(request.headers.get('Authorization'))
+    if usuario == (None):
+        return {'status': -1, 'msg': 'Token Inválido!'}       
+    
+    perfil = db.busca_usuario(login)
+    if perfil == None:
+        return {'status': 2, 'msg': f"Usuário {login} não existe!"}  
+    resultado = db.esta_seguindo(usuario['id'],perfil['id'])
+    if resultado == None:
+        return {'status': 1, 'msg': f"Não está seguindo {login}!"}
+    else:
+        return {'status': 0, 'msg': f"Está seguindo {login}!"}
+
+
+@app.route('/api/unfollow/<login>', methods = ['DELETE'])
+def unfollow(login):
+    usuario = Token.retorna_usuario(request.headers.get('Authorization'))
+    if usuario == (None):
+        return {'status': -1, 'msg': 'Token Inválido!'}       
+    
+    perfil = db.busca_usuario(login)
+    if perfil == None:
+        return {'status': 2, 'msg': f"Usuário {login} não existe!"}
+    db.unfollow(usuario['id'], perfil['id']) 
+    return {'status': 0, 'msg': f"Deixou de seguir {login}!"}     
+
+
+
+
+
+         
+
+
+
+
+    
+    
+
+
+     
