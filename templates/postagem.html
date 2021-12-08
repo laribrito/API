@@ -1,7 +1,7 @@
 <div id=postagem>
     <div id="cabecalhoPostagem">
       <!-- Imagem de perfil -->
-      <img id="imagemPostagem" src="{{ url_for('perfil_avatar', login=pogin) }}">
+      <img id="imagemPostagem" src="{{ url_for('perfil_avatar', login=postagem.login) }}">
       <!-- Nome de login -->
       <div id="nomePostagem{{postagem.id}}" class="nomePostagem">
         <p class="nome">
