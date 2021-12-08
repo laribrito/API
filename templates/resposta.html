@@ -1,0 +1,27 @@
+<div id=postagem>
+    <div id="cabecalhoPostagem">
+      <!-- Imagem de perfil -->
+      <img id="imagemPostagem" src="/static/imagens/perfil/larila">
+      <!-- Nome de login -->
+      <div id="nomePostagem">
+        <p class="nome">
+          <small>
+            Nome<br>
+            <span class="maisClaro" style="margin-left: 0px;">@login
+            </span>
+          </small>
+        </p>
+      </div>
+      <div id="datahora">
+        <span>9:41 AM · 9 de set de 2021</span>
+      </div>
+    </div>
+    <!-- Conteúdo -->
+    <p><small class="maisClaro"> resposta à <a id='linkPostagem' href="{{url_for('exibirPostagem')}}">tal postagem</a> </small></p>
+    <p id="conteudoPostagem">Quem foi o corno que inventou JavaScript?</p>
+    <div id='botoesPostagem'>
+      <!-- <i class="far fa-heart" style="position: absolute; left: 0; margin-left: 30%;"></i> -->
+      <i class="fas fa-heart" style="position: absolute; left: 0; margin-left: 30%;"></i>
+      <i class="far fa-comments" style='position: absolute; right: 0; margin-right: 30%;'></i>
+    </div>
+</div>

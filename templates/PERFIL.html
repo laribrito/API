@@ -1,14 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
     <title>Perfil / Coxitter</title>
-    <!-- Insere icone do site --> 
-    {% include "icone.html" %}
-    <link href="../static/styles/estilo.css" rel="stylesheet" type="text/css"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=News Cycle|Roboto">
-    <script src="https://kit.fontawesome.com/17a3127d7b.js" crossorigin="anonymous"></script>
+    <!-- Insere configurações da tag 'head' --> 
+    {% include "configHead.html" %}
   </head>
   <body style="background-color: white; margin: 0;">
     <!-- Insere mensagens de erro e sucesso --> 
@@ -19,7 +14,7 @@
 
     <div id="meioPagina">
       <h2>PERFIL</h2>
-      <div id="espacoPerfil">
+      <section id="espacoPerfil">
         {% if usuario %}
           <a href="{{url_for('edicao')}}" class="coxinhar btnEditar">EDITAR PERFIL</a>
         {% endif %}
@@ -29,7 +24,19 @@
           <p class="nome seguidores">seguindo x</p>
           <p class="nome seguidores">seguidores y</p>
         </div>
-      </div>
-    </div>    
+      </section>
+      <section id="postagensPerfil">
+        {% if postagens|length == 0 %}
+          <p class="mensagemFinal">Sem mensagens por enquanto...</p>
+        {% else %}
+          {% for postagem in postagens %}
+            {% include 'postagem.html' %}
+          {% endfor %}
+          <p class="mensagemFinal">FIM</p>
+        {% endif %}
+
+      </section>
+    </div> 
+  {% include "rodape.html" %}   
   </body>
 </html>

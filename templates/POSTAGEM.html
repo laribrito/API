@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <title>Postagem de alguem / Coxitter</title>
+    <!-- Insere configurações da tag 'head' --> 
+    {% include "configHead.html" %}
+  </head>
+  <body style="background-color: white; margin: 0;">
+    <!-- Insere mensagens de erro e sucesso --> 
+    {% include "mensagens.html" %}
+
+    <!-- Insere as barras laterais --> 
+    {% include "barrasLaterais.html" %}
+
+    <div id="meioPagina">
+      <h2>POSTAGEM</h2>
+      <section id='postagem'>
+        {% include 'postagem.html' %}
+      </section>
+    </div>
+    
+  {% include "rodape.html" %}
+  </body>
+</html>

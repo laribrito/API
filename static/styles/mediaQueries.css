@@ -1,0 +1,67 @@
+/* até Tablet e Celular */
+@media (max-width: 768px)
+{
+  #caixaLogin{
+    display: none;
+  }
+
+  #imagemGrandeLogin{
+    display: none;
+  }
+
+  #imgCoxinhar{
+    display: none;
+  }
+
+  #mensagemErroLogin{
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 50%;
+    background-color: white;
+    border-radius: 12px;
+    display: block;
+  }
+
+  div[id="mensagemErroLogin"] > h2{
+    color: rgb(82, 117, 231);
+  }
+
+  input[type="submit"]{
+    font-size: 2vw;
+  }
+}
+/* a partir do Tablet */
+@media (min-width: 769px){
+    #mensagemErroLogin{
+        visibility: hidden;
+    }
+}
+/* a partir do Laptop */
+@media (min-width: 1024px)
+{
+  .facet_sidebar
+   {
+    display: none;
+   }
+   #mensagemErroLogin{
+    visibility: hidden;
+  }
+}
+
+/* Notebook */
+@media (min-width: 1440px)
+{
+  .facet_sidebar
+   {
+    display: none;
+   }
+}
+
+/* Televisão */
+@media (min-width: 1440px)
+{
+  .facet_sidebar
+   {
+    display: none;
+   }
+}

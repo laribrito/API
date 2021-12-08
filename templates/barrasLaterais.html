@@ -5,35 +5,64 @@
       <a href="{{url_for('edicao')}}"><div class="half-circle" title="Alterar imagem de perfil"><i class="fas fa-camera" style="font-size: x-large;"></i></div></a>
     </div>
     <!-- Link's laterais -->
-      <table>
+      <table id='linksLaterais'>
           <tr>
               <td>
-              <a href="{{url_for('index')}}" id="ancoraPagina"><img src="../static/imagens/pi.png" height="30" id="imagemPagina"> Pagina inicial</a>
+                <div>
+                  <a href="{{url_for('index')}}" class='ancoraPagina' id="ancoraPaginaInicial">
+                    <picture id="imagemPagina">
+                      <source media="(min-width:1200px)" srcset="../static/imagens/pi.png" height="30">
+                      <img src="">
+                    </picture> 
+                    Pagina inicial
+                  </a>
+                </div>
               </td>
           </tr>
           <tr>
               <td>
-              <a href="{{url_for('perfil')}}" id="ancoraPagina"><img src="../static/imagens/p.png" height="30" id="imagemPagina">Perfil</a>
+                <div>
+                  <a href="{{url_for('perfil')}}" class="ancoraPagina">
+                    <picture id="imagemPagina">
+                      <source media="(min-width:1200px)" srcset="../static/imagens/p.png" height="30">
+                      <img src="">
+                    </picture> 
+                    Perfil
+                  </a>
+                </div>
               </td>
           </tr>
           <tr>
               <td>
-              <a href="#" id="ancoraPagina"><img src="../static/imagens/n.png" height="30" id="imagemPagina">Notificacoes</a>
+                <div>
+                  <a href="#" class="ancoraPagina">
+                    <picture id="imagemPagina">
+                      <source media="(min-width:1200px)" srcset="../static/imagens/n.png" height="30">
+                      <img src="">
+                    </picture> 
+                    Notificacoes
+                  </a>
+                </div>
               </td>
           </tr>
       </table>
     <!-- Botão coxinhar -->
-    <div style="margin-left: 20px; margin-top: 50px;">
-        <a href="#" class="coxinhar" id="coxinha01"><img src="../static/imagens/coxinhar.png" height="60" style="margin-bottom: -17px;">Coxinhar</a>
+    <div style="display: block; margin: auto; margin-top: 3vw; text-align: center;">
+        <a href="#" class="coxinhar" id="coxinha01"><img src="../static/imagens/coxinhar.png" height="60" style="margin-bottom: -17px;" id="imgCoxinhar">Coxinhar</a>
     </div>
   </div>
 
   <div id="barraLateralD">
     <!-- Campo de busca -->
     <form>
-      <input type="text" name=busca id="campoBusca" placeholder="Pesquisar...">
-      <img src="../static/imagens/refri.png" width="70" id="campoBuscaRefri">
-      <input type="submit" value="Pesquisar" style="font-size: small; display: block; margin-left: auto; margin-right: auto; margin-top: -8px;">
+      <div style="position: relative">
+        <input type="text" name=busca id="campoBusca" placeholder="Pesquisar...">
+        <picture id="campoBuscaRefri">
+          <source media="(min-width:1200px)" srcset="../static/imagens/refri.png" width="30">
+          <img src="">
+        </picture>
+      </div>
+      <input type="submit" value="Pesquisar" id="btnPesquisar" disabled>
     </form>
     <!-- Outros conteúdos -->
     <h1 style="display: block; text-align: center; margin-top: 30%;">Coxitter</h1>
@@ -50,6 +79,7 @@
   </div>
 <!-- Javascript -->
 <script>
+    //Funções para a imagem do nosso mestre
     function hover(element) {
         element.setAttribute('src', '../static/imagens/queridoProfessor.png');
     }
@@ -57,4 +87,34 @@
     function unhover(element) {
         element.setAttribute('src', '../static/imagens/professor.jpeg');
     }
+
+    //Conserta a altura da imagem de perfil
+    var el = document.getElementById("imagemPerfilPI");
+    var widthImgPerfil = el.offsetWidth;
+    el.style.height=widthImgPerfil;
+
+    //Conserta a distancia do topo para botões laterais
+    el = document.getElementById("linksLaterais");
+    var distancia = widthImgPerfil * 1.4;
+    el.style.marginTop=distancia+"px";
+
+    //Conserta a distancia do menu inferior direito (Menu Opções)
+    el = document.getElementById("botaoOpc");
+    var style = window.getComputedStyle(el),
+    right = style.getPropertyValue('right');
+    el.style.bottom=right;
+
+    //"Media queries"
+    window.onresize = function(event) {
+      if (window.innerWidth < 600) {
+        // console.log("Largura da janela menor que 600 px");
+        document.getElementById("ancoraPaginaInicial").innerHTML = "Pagina<br>Inicial"
+      } else {
+        // console.log("Largura maior que 600px");
+        document.getElementById("ancoraPaginaInicial").innerHTML = "Pagina Inicial"
+      }
+    };
+  
 </script>
+
+{% include "popupCoxinhar.html" %}

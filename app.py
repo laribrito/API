@@ -4,10 +4,12 @@ from model import db
 from passlib.hash import sha256_crypt
 import os
 from flask import jsonify
-from classes.CADASTRO import Cadastrar
 import secrets
-from passlib.context import CryptPolicy
 from classeToken import Token
+from datetime import datetime
+import locale
+locale.setlocale(locale.LC_ALL, 'pt_BR.utf8')
+import pytz
 
 app = Flask(__name__)
 
@@ -15,7 +17,12 @@ app.secret_key = b'jhdakjrtyfuygiuhijebson145shsOhkhhujk666'
 @app.route("/")
 def index():
     if "usuario" in session: #Verifica se "usuario" existe na sessão
-        return render_template("PAGINAINICIAL.html", logado=session["usuario"])
+        postagensPerfil=buscar_msg_web(session["usuario"])
+        return render_template(
+            "PAGINAINICIAL.html", 
+            logado=session["usuario"], 
+            postagens=postagensPerfil
+        )
     else:
         return render_template("LOGIN.html")
 
@@ -27,6 +34,7 @@ def autenticacao():
     elif sha256_crypt.verify(request.form["senha"], usuario["senha"]): #testa com uma função do hash se a senha está correta
         session["usuario"] = request.form["login"]
         session["nome"] = usuario["nome"]
+        session["id"] = usuario["id"]
         return redirect(url_for("index"))
     else:
         return render_template("LOGIN.html", erro="Erro de autenticação")
@@ -47,11 +55,25 @@ def cadastro():
 @app.route("/perfil")
 def perfil(nome=None):
     if nome == session["usuario"] or not nome:
+        postagensPerfil=buscar_msg_web(session["usuario"])
         user = db.busca_usuario(session["usuario"])
-        return render_template("PERFIL.html", user=user, logado=session["usuario"], usuario=True)
+        return render_template(
+            "PERFIL.html", 
+            user=user, 
+            logado=session["usuario"], 
+            usuario=True,
+            postagens=postagensPerfil
+        )
     else:
+        postagensPerfil=buscar_msg_web(nome)
         user = db.busca_usuario(nome)
-        return render_template("PERFIL.html", user=user, logado=session["usuario"], usuario=False)
+        return render_template(
+            "PERFIL.html", 
+            user=user, 
+            logado=session["usuario"], 
+            usuario=False,
+            postagens=postagensPerfil
+        )
 
 @app.route("/perfil/edicao",methods = ['get'])
 def edicao():
@@ -60,9 +82,18 @@ def edicao():
 
 @app.route("/perfil/editar_nome", methods=["post"])
 def editar_nome():
+    
     db.altera_nome(session["usuario"], request.form["nome"])
     user = db.busca_usuario(session["usuario"])
-    return render_template("PERFIL.html", user=user, logado=session["usuario"], usuario=True, mensagem="Nome editado com sucesso")
+    postagensPerfil=buscar_msg_web(session["usuario"])
+    return render_template(
+        "PERFIL.html", 
+        user=user, 
+        logado=session["usuario"], 
+        usuario=True, 
+        mensagem="Nome editado com sucesso",
+        postagens=postagensPerfil
+    )
 
 @app.route("/perfil/editar_senha", methods=["post"])
 def editar_senha():
@@ -70,7 +101,12 @@ def editar_senha():
         senha_hash = sha256_crypt.hash(request.form["senha1"])
         db.altera_senha(session["usuario"], senha_hash) #efetua o hash na senha
         user = db.busca_usuario(session["usuario"])
-        return render_template("PERFIL.html", user=user, logado=session["usuario"], usuario=True, mensagem="Senha alterada com sucesso")
+        return render_template(
+            "PERFIL.html", 
+            user=user, 
+            logado=session["usuario"], 
+            usuario=True, 
+            mensagem="Senha alterada com sucesso")
     else:
         user = db.busca_usuario(session['usuario'])
         return render_template("EDICAO.html", logado=session["usuario"],user = user, erro="As senhas não coincidem")
@@ -88,18 +124,40 @@ def perfil_avatar(login):
 
 @app.route('/perfil/foto', methods=["POST"])
 def perfil_foto():
+    postagens = buscar_msg_web(session['usuario'])
     if "foto" not in request.files:
         user = db.busca_usuario(session["usuario"])
-        return render_template("PERFIL.html", user=user, logado=session["usuario"], usuario=True, erro="Nenhum arquivo enviado")
+        return render_template(
+            "PERFIL.html", 
+            user=user, 
+            logado=session["usuario"], 
+            usuario=True, 
+            erro="Nenhum arquivo enviado",
+            postagens=postagens
+        )
     arquivo = request.files["foto"]
     if arquivo.filename == '':
         user = db.busca_usuario(session["usuario"])
-        return render_template("PERFIL.html", user=user, logado=session["usuario"], usuario=True, erro="Nenhum arquivo selecionado")
+        return render_template(
+            "PERFIL.html", 
+            user=user, 
+            logado=session["usuario"], 
+            usuario=True, 
+            erro="Nenhum arquivo selecionado",
+            postagens=postagens
+        )
     if arquivo_permitido(arquivo.filename):
         arquivo.save(os.path.join(app.config['PERFIL_FOLDER'],
         session["usuario"]))
         user = db.busca_usuario(session["usuario"])
-        return render_template("PERFIL.html", user=user, logado=session["usuario"], usuario=True, mensagem="Foto de perfil alterada com sucesso")
+        return render_template(
+            "PERFIL.html", 
+            user=user, 
+            logado=session["usuario"], 
+            usuario=True, 
+            mensagem="Foto de perfil alterada com sucesso",
+            postagens=postagens
+        )
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def arquivo_permitido(filename):
@@ -107,10 +165,73 @@ def arquivo_permitido(filename):
 
 @app.route("/sair") #Remove "usuario" da sessão
 def sair():
-    del(session["usuario"])
-    del(session["nome"])
+    del session["usuario"]
+    del session['nome']
+    del session["id"]
     return redirect(url_for("index"))
  
+@app.route('/Postagem', methods=["POST"])
+def postar_msg_web():  
+    postagensPerfil=buscar_msg_web(session["usuario"])
+    try: 
+        texto = request.form['corpo']
+
+        if texto == "":
+            
+            return render_template(
+                "PAGINAINICIAL.html", 
+                logado=session["usuario"], 
+                postagens=postagensPerfil,
+                erro="Mensagem vazia!"
+            )
+        db.posta_mensagem(session["id"], texto)
+        return render_template(
+            "PAGINAINICIAL.html", 
+            logado=session["usuario"], 
+            postagens=postagensPerfil,
+            mensagem="Mensagem postada!"
+        )   
+    
+    except KeyError: 
+        return render_template(
+            "PAGINAINICIAL.html", 
+            logado=session["usuario"], 
+            postagens=postagensPerfil,
+            erro="Mensagem não digitada!"
+        )
+
+#função que retorna as mensagens de um usuário pelo login dele
+def buscar_msg_web(login):
+    perfil = db.busca_usuario(login)
+    postagens = db.listar_mensagem(perfil['id'])
+    lista = []
+    
+    for postagem in postagens:
+        #Formatação da data hora
+        datahora=postagem["data_hora"]
+        dt = datetime.strptime(datahora, "%Y-%m-%d %H:%M:%S")
+        hora_utc = pytz.utc.localize(dt)
+        data = hora_utc.astimezone(pytz.timezone('America/Bahia'))
+        dataFormatada=data.strftime("%d de %b de %Y · %H:%M")
+
+        #Criação do item postagem
+        item = {
+            'datahora': dataFormatada, 
+            'texto': postagem['corpo'],
+            'nome': perfil['nome'],
+            'login': login
+        }
+        lista.append(item)
+
+        #Ordena pela datahora, do mais recente para o mais antigo
+        lista.sort(key=lambda x: x["datahora"], reverse=True)
+  
+    return lista
+
+@app.route('/postagem')
+def exibirPostagem():
+    return render_template('POSTAGEM.html')
+  
 
 ##########################################API##################################################################################################################
 
@@ -331,3 +452,5 @@ def buscar_msg(login):
         lista.append(item)
   
     return {'status': 0,  'lista': lista}
+
+
