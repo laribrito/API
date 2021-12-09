@@ -548,7 +548,12 @@ def buscar_msg(login):
     lista = []
     
     for postagem in postagens:
-        item = {'datahora': postagem['data_hora'], 'texto': postagem['corpo']}
+        item = {
+            'datahora': postagem['data_hora'], 
+            'texto': postagem['corpo'],
+            "nome": perfil["nome"],
+            "usuario": perfil["login"]
+        }
         lista.append(item)
   
     return {'status': 0,  'lista': lista}
