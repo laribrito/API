@@ -622,7 +622,7 @@ def unfollow(login):
 
 
 @app.route('/api/feed_SEGUIDORES/<login>',methods = ['GET'])
-def feed(login):
+def feed_seguidores(login):
     usuario = Token.retorna_usuario(request.headers.get('Authorization'))
     if usuario == (None):
         return {'status': -1, 'msg': 'Token Inválido!'} 
@@ -641,6 +641,34 @@ def feed(login):
         lista.append(item)
   
     return {'status': 0,  'lista': lista}
+
+@app.route("/api/feed/<login>", methods=["get"])
+def feed(login):
+    usuario = Token.retorna_usuario(request.headers.get('Authorization'))
+    if usuario == (None):
+        return {'status': -1, 'msg': 'Token Inválido!'} 
+    
+    #Pega a lista de seguidores
+    seguidores = feed_seguidores(login)
+    if seguidores["status"]==0:
+        seguidores=seguidores["lista"]
+    
+    #pega as mensagens de todos
+    postagensLogado = buscar_msg(login)
+    postagensLogado = postagensLogado["lista"]
+    for s in seguidores:
+        postagensSeguidores = buscar_msg(s["login"])
+        postagensSeguidores = postagensSeguidores["lista"]
+
+    #junta as mensagens
+    print(postagensSeguidores)
+    postagensLogado += postagensSeguidores
+
+    #reordena a lista pela datahora
+    postagensLogado.sort(key=lambda x: x["datahora"], reverse=True)
+
+    return {'status': 0, 'lista': postagensLogado} 
+
 
 @app.route('/api/curtir/<id_post>', methods = ['POST'])
 def curtir(id_post):
