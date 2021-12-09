@@ -548,7 +548,6 @@ def buscar_msg(login):
     lista = []
     
     for postagem in postagens:
-<<<<<<< HEAD
         #Formatação da data hora
         datahora=postagem["data_hora"]
         dt = datetime.strptime(datahora, "%Y-%m-%d %H:%M:%S")
@@ -562,9 +561,6 @@ def buscar_msg(login):
             "nome": perfil["nome"],
             "usuario": perfil["login"]
         }
-=======
-        item = {'datahora': postagem['data_hora'], 'texto': postagem['corpo']}
->>>>>>> parent of 1b894d4... Altera api busca_msg
         lista.append(item)
     
     #Ordena pela datahora, do mais recente para o mais antigo
