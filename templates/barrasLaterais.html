@@ -10,10 +10,6 @@
               <td>
                 <div>
                   <a href="{{url_for('index')}}" class='ancoraPagina' id="ancoraPaginaInicial">
-                    <picture id="imagemPagina">
-                      <source media="(min-width:1200px)" srcset="../static/imagens/pi.png" height="30">
-                      <img src="">
-                    </picture> 
                     Pagina inicial
                   </a>
                 </div>
@@ -22,11 +18,7 @@
           <tr>
               <td>
                 <div>
-                  <a href="{{url_for('perfil')}}" class="ancoraPagina">
-                    <picture id="imagemPagina">
-                      <source media="(min-width:1200px)" srcset="../static/imagens/p.png" height="30">
-                      <img src="">
-                    </picture> 
+                  <a href="{{url_for('perfil')}}" class="ancoraPagina"> 
                     Perfil
                   </a>
                 </div>
@@ -36,10 +28,6 @@
               <td>
                 <div>
                   <a href="#" class="ancoraPagina" id="Notificacoes">
-                    <picture id="imagemPagina">
-                      <source media="(min-width:1200px)" srcset="../static/imagens/n.png" height="30">
-                      <img src="">
-                    </picture> 
                     Notificacoes
                   </a>
                 </div>
@@ -57,10 +45,6 @@
     <form method="post" action="{{url_for('perfil')}}">
       <div style="position: relative">
         <input type="text" name=busca id="campoBusca" placeholder="Pesquisar o login de um usuário">
-        <picture id="campoBuscaRefri">
-          <source media="(min-width:1440px)" srcset="../static/imagens/refri.png" width="30">
-          <img src="">
-        </picture>
       </div>
       <input type="submit" value="Pesquisar" id="btnPesquisar">
     </form>
