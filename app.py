@@ -633,7 +633,11 @@ def feed(login):
     lista = []
     
     for seguindo in resultado:
-        item = {'id': seguindo['seguindo'],}
+        user = db.busca_id(seguindo["seguindo"])
+        item = {
+            'id': seguindo['seguindo'],
+            "login": user["login"]
+        }
         lista.append(item)
   
     return {'status': 0,  'lista': lista}
