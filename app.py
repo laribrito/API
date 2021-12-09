@@ -555,11 +555,18 @@ def buscar_msg(login):
         data = hora_utc.astimezone(pytz.timezone('America/Bahia'))
         dataFormatada=data.strftime("%d de %b de %Y · %H:%M")
 
+        #pega a foto
+        login = perfil["login"]
+        urlFoto = retorna_foto(login)
+        if urlFoto["status"] == 0:
+            urlFoto=urlFoto["url"]
+
         item = {
             'datahora': dataFormatada, 
             'texto': postagem['corpo'],
             "nome": perfil["nome"],
-            "usuario": perfil["login"]
+            "usuario": login,
+            "foto": urlFoto
         }
         lista.append(item)
     
