@@ -656,13 +656,14 @@ def feed(login):
     #pega as mensagens de todos
     postagensLogado = buscar_msg(login)
     postagensLogado = postagensLogado["lista"]
+    lista=[]
     for s in seguidores:
         postagensSeguidores = buscar_msg(s["login"])
         postagensSeguidores = postagensSeguidores["lista"]
+        lista += postagensSeguidores
 
     #junta as mensagens
-    print(postagensSeguidores)
-    postagensLogado += postagensSeguidores
+    postagensLogado += lista
 
     #reordena a lista pela datahora
     postagensLogado.sort(key=lambda x: x["datahora"], reverse=True)
