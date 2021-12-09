@@ -548,13 +548,23 @@ def buscar_msg(login):
     lista = []
     
     for postagem in postagens:
+        #Formatação da data hora
+        datahora=postagem["data_hora"]
+        dt = datetime.strptime(datahora, "%Y-%m-%d %H:%M:%S")
+        hora_utc = pytz.utc.localize(dt)
+        data = hora_utc.astimezone(pytz.timezone('America/Bahia'))
+        dataFormatada=data.strftime("%d de %b de %Y · %H:%M")
+
         item = {
-            'datahora': postagem['data_hora'], 
+            'datahora': dataFormatada, 
             'texto': postagem['corpo'],
             "nome": perfil["nome"],
             "usuario": perfil["login"]
         }
         lista.append(item)
+    
+    #Ordena pela datahora, do mais recente para o mais antigo
+    lista.sort(key=lambda x: x["datahora"], reverse=True)
   
     return {'status': 0,  'lista': lista}
 
