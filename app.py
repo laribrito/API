@@ -402,7 +402,7 @@ def retornaPerfil(login):
         return {'status': 1, 'msg': 'Perfil não encontrado.'}
     else:
         #SUCESSO
-        return {'status': 0, 'login': login, 'nome': usuario['nome']}
+        return {'status': 0, 'login': login, 'nome': perfil['nome']}
 
 @app.route('/api/editarsenha', methods = ['POST'])
 def edit_senha():
@@ -525,6 +525,7 @@ def postar_msg():
   
     try: 
         texto = request.form['corpo']
+        texto = texto.strip()
 
         if texto == "":
             return {'status': 2 , 'msg': "Mensagem Vazia!"}
