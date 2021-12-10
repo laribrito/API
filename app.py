@@ -628,9 +628,30 @@ def feed_seguidores(login):
     if usuario == (None):
         return {'status': -1, 'msg': 'Token Inválido!'} 
     perfil = db.busca_usuario(login)
-    resultado = db.feed_seguindo(perfil['id'])
+    resultado = db.feed_seguidor(perfil['id'])
     
    
+    lista = []
+    
+    for seguidor in resultado:
+        user = db.busca_id(seguidor["seguidor"])
+        item = {
+            'id': seguidor['seguidor'],
+            "login": user["login"]
+        }
+        lista.append(item)
+  
+    return {'status': 0,  'lista': lista}
+
+@app.route('/api/feed_SEGUINDO/<login>',methods = ['GET'])
+def feed_seguindo(login):
+    usuario = Token.retorna_usuario(request.headers.get('Authorization'))
+    if usuario == (None):
+        return {'status': -1, 'msg': 'Token Inválido!'}
+
+    perfil = db.busca_usuario(login)
+    resultado = db.feed_seguindo(perfil['id'])
+    
     lista = []
     
     for seguindo in resultado:
@@ -650,7 +671,7 @@ def feed(login):
         return {'status': -1, 'msg': 'Token Inválido!'} 
     
     #Pega a lista de seguidores
-    seguidores = feed_seguidores(login)
+    seguidores = feed_seguindo(login)
     if seguidores["status"]==0:
         seguidores=seguidores["lista"]
     
