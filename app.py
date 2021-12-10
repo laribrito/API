@@ -562,12 +562,23 @@ def buscar_msg(login):
         if urlFoto["status"] == 0:
             urlFoto=urlFoto["url"]
 
+        #pega a quantidade de curtidas para essa postagem
+        id_post = postagem["id_post"]
+        quant = db.retorna_quant_curtidas(id_post)
+        listaAux = []
+        for curtida in quant:
+            item = {'id': curtida['id_user']}
+            listaAux.append(item)
+        quant = len(listaAux)
+
         item = {
+            "id_post": id_post,
             'datahora': dataFormatada, 
             'texto': postagem['corpo'],
             "nome": perfil["nome"],
             "usuario": login,
-            "foto": urlFoto
+            "foto": urlFoto,
+            "quantCurtidas":quant
         }
         lista.append(item)
     
@@ -721,7 +732,7 @@ def varifica_curtida(id_post):
         return {'status': 1, 'msg': f"Não está Curtindo!"}   
     
     else:        
-        return {'status': 1, 'msg': f"Está Curtindo!"}
+        return {'status': 0, 'msg': f"Está Curtindo!"}
 
 @app.route('/api/descurtir/<id_post>', methods = ['DELETE'])
 def descurtir(id_post):
