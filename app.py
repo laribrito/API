@@ -145,7 +145,7 @@ def editar_nome():
     db.altera_nome(session["usuario"], request.form["nome"])
     user = db.busca_usuario(session["usuario"])
     postagensPerfil=buscar_msg_web(session["usuario"])
-    return redirect(url_for("perfil",mensagem="Nome editado com sucesso"))
+    return redirect(url_for("perfil",msg="Nome editado com sucesso"))
 
 @app.route("/perfil/editar_senha", methods=["post"])
 def editar_senha():
@@ -153,7 +153,7 @@ def editar_senha():
         senha_hash = sha256_crypt.hash(request.form["senha1"])
         db.altera_senha(session["usuario"], senha_hash) #efetua o hash na senha
         user = db.busca_usuario(session["usuario"])
-        return redirect(url_for("perfil", mensagem="Senha alterada com sucesso"))
+        return redirect(url_for("perfil", msg="Senha alterada com sucesso"))
     else:
         user = db.busca_usuario(session['usuario'])
         return redirect(url_for("edicao", erro="As senhas não coincidem"))
@@ -185,7 +185,7 @@ def perfil_foto():
         arquivo.save(os.path.join(app.config['PERFIL_FOLDER'],
         session["usuario"]))
         user = db.busca_usuario(session["usuario"])
-        return redirect(url_for("perfil",mensagem="Foto de perfil alterada com sucesso"))
+        return redirect(url_for("perfil",msg="Foto de perfil alterada com sucesso"))
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def arquivo_permitido(filename):
