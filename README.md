@@ -20,7 +20,9 @@
 </div>
 
 <h2 id='objetivo'>Objetivo</h2>
-A proposta foi construir uma rede social simples no estilo do Twitter, com mensagens de texto públicas, que podem ser curtidas, etc. A nossa rede social se chama Coxitter! Nesse repositório estão nossos templates, funcionamento back-end e funcionamento da API Restfull. A API Restfull é usada por um aplicativo Kivy também construído pela equipe.
+A proposta foi construir uma rede social simples no estilo do Twitter, com mensagens de texto públicas, que podem ser curtidas, etc. A nossa rede social se chama Coxitter! Nesse repositório estão nossos templates, funcionamento back-end e funcionamento da API Restfull. A API Restfull é usada por um 
+[aplicativo Kivy] (https://github.com/laribrito/Coxitter) 
+também construído pela equipe.
 
 <h2 id='requisitos'> Pré-requisitos e run </h2>
 
